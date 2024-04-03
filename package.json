@@ -1,0 +1,21 @@
+{
+  "name": "world-sim",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "@types/ws": "^8.5.10",
+    "ts-node": "^10.9.2",
+    "ts-patch": "^3.1.2",
+    "typescript": "5.4.2"
+  },
+  "dependencies": {
+    "typia": "^5.5.7",
+    "ws": "^8.16.0"
+  },
+  "scripts": {
+    "prepare": "ts-patch install && typia patch",
+    "sim": "tsc && node dist/index.js"
+  }
+}
