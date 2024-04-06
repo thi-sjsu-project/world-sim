@@ -1,5 +1,6 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
+import { log } from "./util";
 
 if (process.platform === "win32") app.setAppUserModelId(app.getName());
 
@@ -50,4 +51,8 @@ app.on("activate", () => {
   } else {
     createWindow();
   }
+});
+
+ipcMain.handle("hello", async (_event, msg: string) => {
+  log(`Received IPC message from SolidJS: ${msg}`);
 });

@@ -2,6 +2,6 @@ export {};
 
 declare global {
   interface Window {
-    ipcRenderer: import("electron").IpcRenderer;
+    ipcRendererInvoke: (channel: string, ...args: any[]) => Promise<any>;
   }
 }

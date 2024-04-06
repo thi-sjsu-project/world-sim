@@ -11,7 +11,7 @@ function watchMain(server) {
    */
   let electronProcess = null;
   const address = server.httpServer.address();
-  const isIpv4 = address.includes(".");
+  const isIpv4 = address.toString().includes(".");
   const env = Object.assign(process.env, {
     VITE_DEV_SERVER_HOST: isIpv4 ? address.address : `[${address.address}]`,
     VITE_DEV_SERVER_PORT: address.port,
