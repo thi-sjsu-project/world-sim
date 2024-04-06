@@ -28,7 +28,6 @@ async function createWindow() {
   } else {
     const url = `http://${process.env["VITE_DEV_SERVER_HOST"]}:${process.env["VITE_DEV_SERVER_PORT"]}`;
     win.loadURL(url);
-    win.webContents.openDevTools();
   }
 }
 
@@ -57,4 +56,8 @@ app.on("activate", () => {
 
 ipcMain.handle("hello", async (_event, msg: string) => {
   log(`Received IPC message from SolidJS: ${msg}`);
+});
+
+ipcMain.handle("openDevTools", async (_event) => {
+  win?.webContents?.openDevTools({ mode: "detach" });
 });

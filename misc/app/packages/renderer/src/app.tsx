@@ -13,7 +13,7 @@ const App: Component = () => {
   onCleanup(() => clearInterval(interval));
 
   return (
-    <div class="w-screen h-screen bg-zinc-900 text-zinc-300 px-3 py-2">
+    <div class="w-screen h-screen bg-zinc-900 text-zinc-300 p-4">
       <Header timer={timer} setTimer={setTimer} />
       <div class="mt-4">
         <Timeline timer={timer} />
