@@ -21,6 +21,8 @@ async function createWindow() {
     },
   });
 
+  win.setMenu(null);
+
   if (app.isPackaged) {
     win.loadFile(join(__dirname, "../renderer/index.html"));
   } else {
