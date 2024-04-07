@@ -1,6 +1,5 @@
 import { Accessor, Component, Setter, createMemo } from "solid-js";
-import { Icon } from "solid-heroicons";
-import { backward, wrenchScrewdriver } from "solid-heroicons/solid-mini";
+import { IconRestore, IconZoomCode } from "@tabler/icons-solidjs";
 
 const Header: Component<{
   timer: Accessor<number>;
@@ -15,17 +14,18 @@ const Header: Component<{
       <button
         class="mr-3 text-zinc-600 hover:text-zinc-500"
         onclick={() => props.setTimer(0)}
+        title="Restart timeline"
       >
-        <Icon path={backward} class="w-5 h-5" />
+        <IconRestore />
       </button>
 
-      <span class="align-[.25rem]">{formattedTime()}s</span>
+      <span class="align-[.375rem]">{formattedTime()}s</span>
 
       <button
         class="ml-3 text-zinc-600 hover:text-zinc-500 float-right"
         onclick={() => window.ipcRendererInvoke("openDevTools")}
       >
-        <Icon path={wrenchScrewdriver} class="w-5 h-5" />
+        <IconZoomCode />
       </button>
     </div>
   );
