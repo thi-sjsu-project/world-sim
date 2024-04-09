@@ -5,9 +5,9 @@ import typia from "typia";
 /* sample messages ********************************************************************************/
 
 const SAMPLES: Array<Message> = [
-  // example convo 1: high priority, low threat, no collateral
-  {
-    id: 0,
+   // example convo 1: high priority, low threat, no collateral
+   {
+    id: "AAA27046-14A8-449C-960C-79BE303E71D4",
     priority: 8,
     kind: "RequestApprovalToAttack",
     data: {
@@ -28,7 +28,7 @@ const SAMPLES: Array<Message> = [
 
   // example convo 2: low priority, low threat, no collateral, weapons low
   {
-    id: 1,
+    id: "5EC92D78-4B9E-4879-BB2E-F226BD34151D",
     priority: 2,
     kind: "RequestApprovalToAttack",
     data: {
@@ -49,7 +49,7 @@ const SAMPLES: Array<Message> = [
 
   // fuel low on aca
   {
-    id: 2,
+    id: "EB207A99-D2DB-4C44-A211-293B0321C727",
     priority: 5,
     kind: "AcaFuelLow",
     data: {
@@ -60,7 +60,7 @@ const SAMPLES: Array<Message> = [
 
   // example convo 3: low priority, low threat, no collateral
   {
-    id: 3,
+    id: "301E5FB4-5D93-4233-9E52-4D87B95733D0",
     priority: 3,
     kind: "RequestApprovalToAttack",
     data: {
@@ -81,7 +81,7 @@ const SAMPLES: Array<Message> = [
 
   // aca that previously send low fuel is now heading to base
   {
-    id: 4,
+    id: "C7216187-5E0D-442A-9432-5D342A9F1362",
     priority: 5,
     kind: "AcaHeadingToBase",
     data: {
@@ -92,7 +92,7 @@ const SAMPLES: Array<Message> = [
 
   // example convo 4: low priority, high threat, no collateral
   {
-    id: 5,
+    id: "34F70C3A-A592-4028-AC8E-9792A84AC1C5",
     priority: 3,
     kind: "RequestApprovalToAttack",
     data: {
@@ -113,7 +113,7 @@ const SAMPLES: Array<Message> = [
 
   // example convo 5: missile heading towards ownship, weapons low on aca
   {
-    id: 6,
+    id: "CD99F764-45E6-4A46-9636-F62243313177",
     priority: 10,
     kind: "MissileToOwnshipDetected",
     data: {
@@ -130,7 +130,7 @@ const SAMPLES: Array<Message> = [
 
   // defect on aca
   {
-    id: 7,
+    id: "C654FB26-2BD0-4128-88D2-D5CC7435B92F",
     priority: 7,
     kind: "AcaDefect",
     data: {
@@ -141,7 +141,7 @@ const SAMPLES: Array<Message> = [
 
   // example convo 6: high priority, low threat, possible collateral
   {
-    id: 8,
+    id: "156E8248-583C-4C44-A80A-7282D131A5C9",
     priority: 8,
     kind: "RequestApprovalToAttack",
     data: {
@@ -162,7 +162,7 @@ const SAMPLES: Array<Message> = [
 
   // example convo 7: high priority, low threat, no collateral, detected by ownship
   {
-    id: 9,
+    id: "5442478F-50A5-4160-A9E7-C9218A776EC0",
     priority: 7,
     kind: "RequestApprovalToAttack",
     data: {
