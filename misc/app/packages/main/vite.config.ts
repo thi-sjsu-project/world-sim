@@ -5,6 +5,7 @@ import react from "@vitejs/plugin-react";
 import pkg from "../../package.json";
 
 export default defineConfig({
+  esbuild: false,
   root: __dirname,
   build: {
     outDir: "../../dist/main",
@@ -19,7 +20,7 @@ export default defineConfig({
       external: [
         "electron",
         ...builtinModules,
-        ...Object.keys(pkg.dependencies || {}),
+        ...Object.keys(pkg.devDependencies || {}),
       ],
       plugins: [
         react(),
