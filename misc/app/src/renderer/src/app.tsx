@@ -7,6 +7,7 @@ import { Signal } from "./util";
 export const STATE = {
   elapsed: Signal(0),
   timeline: Signal<Array<TimelineEntry>>([]),
+  wsConnected: Signal(false),
 };
 
 window.timelineApi.onUpdate((newTimeline: Array<TimelineEntry>) => {
@@ -15,6 +16,10 @@ window.timelineApi.onUpdate((newTimeline: Array<TimelineEntry>) => {
 
 window.timelineApi.onElapsed((elapsedMs: number) => {
   STATE.elapsed.set(elapsedMs);
+});
+
+window.timelineApi.onWsUpdate((wsConnected: boolean) => {
+  STATE.wsConnected.set(wsConnected);
 });
 
 const App: Component = () => {

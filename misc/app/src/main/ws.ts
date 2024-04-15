@@ -23,15 +23,20 @@ export function startWebSocketServer(webContents: WebContents) {
       return;
     }
 
+    function setActive(active: boolean) {
+      connectionActive = active;
+      webContents.send("timelineWsUpdate", active);
+    }
+
     function close() {
       ws.close();
-      connectionActive = false;
+      setActive(false);
       timelineManager.reset();
       logInfo("(ws) connection closed");
     }
 
     logInfo("(ws) connection opened");
-    connectionActive = true;
+    setActive(true);
     timelineManager.reset();
 
     ws.on("error", (error) => {
