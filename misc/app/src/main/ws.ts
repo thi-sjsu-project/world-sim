@@ -12,7 +12,7 @@ export function startWebSocketServer() {
   const PORT = 6969;
   const wss = new WebSocket.Server({ port: PORT });
 
-  logInfo(`running on port ${PORT}`);
+  logInfo(`(ws) running on port ${PORT}`);
 
   wss.on("connection", async (ws) => {
     logInfo("(ws) connection opened");

@@ -15,7 +15,6 @@
   },
   "devDependencies": {
     "@tabler/icons-solidjs": "2.47.0",
-    "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.2",
     "electron": "^29.2.0",
     "electron-builder": "^24.13.3",
@@ -29,7 +28,7 @@
     "typia": "^6.0.1",
     "vite": "^5.2.8",
     "vite-plugin-resolve": "^2.5.1",
-    "vite-plugin-solid": "^2.2.5",
+    "vite-plugin-solid": "^2.10.2",
     "ws": "^8.16.0"
   },
   "env": {

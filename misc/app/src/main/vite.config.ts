@@ -1,8 +1,8 @@
 import { builtinModules } from "module";
 import { defineConfig } from "vite";
 import typescript from "rollup-plugin-typescript2";
-import react from "@vitejs/plugin-react";
 import pkg from "../../package.json";
+import solidPlugin from "vite-plugin-solid";
 
 export default defineConfig({
   esbuild: false,
@@ -22,10 +22,7 @@ export default defineConfig({
         ...builtinModules,
         ...Object.keys(pkg.devDependencies || {}),
       ],
-      plugins: [
-        react(),
-        typescript(),
-      ]
+      plugins: [solidPlugin(), typescript()],
     },
   },
 });

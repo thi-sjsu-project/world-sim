@@ -1,5 +1,5 @@
 export function logInfo(message: any) {
-  console.log(` \x1b[1;34m[info]\x1b[0m ${message}`);
+  console.log(` \x1b[1;32m[info]\x1b[0m ${message}`);
 }
 
 export function logError(message: any) {
