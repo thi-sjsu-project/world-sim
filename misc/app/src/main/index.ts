@@ -1,9 +1,8 @@
 // jeffrey work on this file
 import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
-import { log } from "./util";
-import * as WebSocketType from "ws";
-import {validMessages} from "./messages";
+import { logInfo } from "./util";
+import { startWebSocketServer } from "./ws";
 
 if (process.platform === "win32") app.setAppUserModelId(app.getName());
 
@@ -11,12 +10,6 @@ if (!app.requestSingleInstanceLock()) {
   app.quit();
   process.exit(0);
 }
-
-
-const LOG = {
-  ERROR: "\x1b[31m[err]\x1b[0m",
-  INFO: "\x1b[34m[info]\x1b[0m",
-};
 
 let win: BrowserWindow | null = null;
 
@@ -65,37 +58,11 @@ app.on("activate", () => {
 });
 
 ipcMain.handle("hello", async (_event, msg: string) => {
-  log(`Received IPC message from SolidJS: ${msg}`);
+  logInfo(`Received IPC message from SolidJS: ${msg}`);
 });
 
 ipcMain.handle("openDevTools", async (_event) => {
   win?.webContents?.openDevTools({ mode: "detach" });
 });
 
-
-//web socket server connection
-const WebSocket:typeof WebSocketType = require("ws");
-const PORT = 6969;
-const wss = new WebSocket.Server({ port: PORT });
-
-
-console.log(LOG.INFO, `running on port ${PORT}`);
-
-
-wss.on("connection", async (ws) => {
-  console.log(LOG.INFO, "connection opened");
-
-  ws.on("error", (error) => {
-    console.log(LOG.ERROR, error)
-  });
-
-  function send(msg: string) {
-    console.log(LOG.INFO, `sending message: ${msg}`);
-    ws.send(msg);
-  }
-
-  send(validMessages.toString());
-
-  ws.close();
-  console.log(LOG.INFO, "connection closed");
-});
+startWebSocketServer();

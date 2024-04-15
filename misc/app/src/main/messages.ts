@@ -1,12 +1,19 @@
-import { AcaDefect, AcaFuelLow, AcaHeadingToBase, Message, MissileToOwnshipDetected, RequestApprovalToAttack } from "../../../../submodules/message-schemas/schema-types";
-import typia from "typia";
-
+import {
+  AcaDefect,
+  AcaFuelLow,
+  AcaHeadingToBase,
+  Message,
+  MissileToOwnshipDetected,
+  RequestApprovalToAttack,
+} from "../../../../submodules/message-schemas/schema-types";
+import { createValidateEquals } from "typia";
+import { logError } from "./util";
 
 /* sample messages ********************************************************************************/
 
-const SAMPLES: Array<Message> = [
-   // example convo 1: high priority, low threat, no collateral
-   {
+const UNVALIDATED_MESSAGES: Array<Message> = [
+  // example convo 1: high priority, low threat, no collateral
+  {
     id: "AAA27046-14A8-449C-960C-79BE303E71D4",
     priority: 8,
     kind: "RequestApprovalToAttack",
@@ -181,31 +188,47 @@ const SAMPLES: Array<Message> = [
   } satisfies RequestApprovalToAttack,
 ];
 
+const UNVALIDATED_TIMELINE = [
+  { delay: 0, msg: UNVALIDATED_MESSAGES[0] },
+  { delay: 10_000, msg: UNVALIDATED_MESSAGES[1] },
+  { delay: 12_000, msg: UNVALIDATED_MESSAGES[2] },
+  { delay: 24_000, msg: UNVALIDATED_MESSAGES[3] },
+  { delay: 25_000, msg: UNVALIDATED_MESSAGES[4] },
+  { delay: 28_000, msg: UNVALIDATED_MESSAGES[5] },
+  { delay: 45_000, msg: UNVALIDATED_MESSAGES[6] },
+  { delay: 50_000, msg: UNVALIDATED_MESSAGES[7] },
+  { delay: 55_000, msg: UNVALIDATED_MESSAGES[8] },
+  { delay: 60_000, msg: UNVALIDATED_MESSAGES[9] },
+];
 
 /* validation *************************************************************************************/
 
 const VALIDATORS = {
-  "AcaDefect": typia.createValidateEquals<AcaDefect>(),
-  "AcaFuelLow": typia.createValidateEquals<AcaFuelLow>(),
-  "AcaHeadingToBase": typia.createValidateEquals<AcaHeadingToBase>(),
-  "MissileToOwnshipDetected": typia.createValidateEquals<MissileToOwnshipDetected>(),
-  "RequestApprovalToAttack": typia.createValidateEquals<RequestApprovalToAttack>(),
+  AcaDefect: createValidateEquals<AcaDefect>(),
+  AcaFuelLow: createValidateEquals<AcaFuelLow>(),
+  AcaHeadingToBase: createValidateEquals<AcaHeadingToBase>(),
+  MissileToOwnshipDetected: createValidateEquals<MissileToOwnshipDetected>(),
+  RequestApprovalToAttack: createValidateEquals<RequestApprovalToAttack>(),
 };
 
-
-export const validMessages: Message[] = [];
-for (const msg of SAMPLES) {
+function validateMessage(msg: Message): msg is Message {
   const validator = VALIDATORS[msg.kind];
   const validationResult = validator(msg);
 
   if (validationResult.success) {
-    console.log(`msg ${msg.id}: \x1b[32mOK\x1b[0m`);
-    validMessages.push(msg);
-
+    return true;
   } else {
-    console.log(`msg ${msg.id}: \x1b[31mERROR\x1b[0m`);
+    logError(`msg ${msg.id} invalid:`);
     for (const error of validationResult.errors) {
-      console.log(` - ${error.path}, expected ${error.expected}, found value ${error.value}`);
+      logError(
+        ` - ${error.path}, expected ${error.expected}, found value ${error.value}`
+      );
     }
   }
+
+  return false;
 }
+
+export const TIMELINE = UNVALIDATED_TIMELINE.filter((entry) =>
+  validateMessage(entry.msg)
+);
