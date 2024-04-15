@@ -10,7 +10,7 @@ const MESSAGES: Array<Message> = [
   // example convo 1: high priority, low threat, no collateral
   {
     id: "AAA27046-14A8-449C-960C-79BE303E71D4",
-    priority: 8,
+    priority: 2,
     kind: "RequestApprovalToAttack",
     data: {
       target: {
@@ -31,7 +31,7 @@ const MESSAGES: Array<Message> = [
   // example convo 2: low priority, low threat, no collateral, weapons low
   {
     id: "5EC92D78-4B9E-4879-BB2E-F226BD34151D",
-    priority: 2,
+    priority: 8,
     kind: "RequestApprovalToAttack",
     data: {
       target: {
@@ -63,7 +63,7 @@ const MESSAGES: Array<Message> = [
   // example convo 3: low priority, low threat, no collateral
   {
     id: "301E5FB4-5D93-4233-9E52-4D87B95733D0",
-    priority: 3,
+    priority: 7,
     kind: "RequestApprovalToAttack",
     data: {
       target: {
@@ -95,7 +95,7 @@ const MESSAGES: Array<Message> = [
   // example convo 4: low priority, high threat, no collateral
   {
     id: "34F70C3A-A592-4028-AC8E-9792A84AC1C5",
-    priority: 3,
+    priority: 7,
     kind: "RequestApprovalToAttack",
     data: {
       target: {
@@ -116,7 +116,7 @@ const MESSAGES: Array<Message> = [
   // example convo 5: missile heading towards ownship, weapons low on aca
   {
     id: "CD99F764-45E6-4A46-9636-F62243313177",
-    priority: 10,
+    priority: 0,
     kind: "MissileToOwnshipDetected",
     data: {
       missileLocation: { lat: 48.603579, lng: 11.592345 },
@@ -133,7 +133,7 @@ const MESSAGES: Array<Message> = [
   // defect on aca
   {
     id: "C654FB26-2BD0-4128-88D2-D5CC7435B92F",
-    priority: 7,
+    priority: 3,
     kind: "AcaDefect",
     data: {
       acaId: 1,
@@ -144,7 +144,7 @@ const MESSAGES: Array<Message> = [
   // example convo 6: high priority, low threat, possible collateral
   {
     id: "156E8248-583C-4C44-A80A-7282D131A5C9",
-    priority: 8,
+    priority: 2,
     kind: "RequestApprovalToAttack",
     data: {
       target: {
@@ -165,7 +165,7 @@ const MESSAGES: Array<Message> = [
   // example convo 7: high priority, low threat, no collateral, detected by ownship
   {
     id: "5442478F-50A5-4160-A9E7-C9218A776EC0",
-    priority: 7,
+    priority: 3,
     kind: "RequestApprovalToAttack",
     data: {
       target: {
