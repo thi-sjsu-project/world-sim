@@ -1,17 +1,18 @@
 import * as WebSocketType from "ws";
 import { logInfo, logError } from "./util";
 import { TimelineManager } from "./timelinemgr";
+import { WebContents } from "electron";
 
 // typeof magic required because typescript stoopid
 const WebSocket: typeof WebSocketType = require("ws");
 
 const PORT = 6969;
 
-export function startWebSocketServer() {
+export function startWebSocketServer(webContents: WebContents) {
   const wss = new WebSocket.Server({ port: PORT });
   logInfo(`(ws) running on port ${PORT}`);
 
-  const timelineManager = new TimelineManager();
+  const timelineManager = new TimelineManager(webContents);
   let connectionActive = false;
 
   wss.on("connection", async (ws) => {

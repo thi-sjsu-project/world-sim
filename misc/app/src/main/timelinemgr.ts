@@ -1,3 +1,4 @@
+import { WebContents, ipcMain } from "electron";
 import { SimToCmMessage } from "../../../../submodules/message-schemas/schema-types";
 import { DEFAULT_TIMELINE } from "./messages";
 import { delayMs } from "./util";
@@ -8,12 +9,18 @@ export type TimelineEntry = {
 };
 
 export class TimelineManager {
+  private webContents: WebContents;
   private timeline: Array<TimelineEntry>;
   private index: number;
 
-  constructor() {
+  constructor(webContents: WebContents) {
+    this.webContents = webContents;
     this.timeline = structuredClone(DEFAULT_TIMELINE);
     this.index = 0;
+
+    ipcMain.handle("timelineUpdateRequest", () => {
+      this.sendTimelineToRenderer();
+    });
   }
 
   reset() {
@@ -35,5 +42,9 @@ export class TimelineManager {
 
   get currentIndex(): number {
     return this.index;
+  }
+
+  private sendTimelineToRenderer() {
+    this.webContents.send("timelineUpdate", this.timeline);
   }
 }

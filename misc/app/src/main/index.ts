@@ -1,7 +1,5 @@
-// jeffrey work on this file
 import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
-import { logInfo } from "./util";
 import { startWebSocketServer } from "./ws";
 
 if (process.platform === "win32") app.setAppUserModelId(app.getName());
@@ -15,8 +13,8 @@ let win: BrowserWindow | null = null;
 
 async function createWindow() {
   win = new BrowserWindow({
-    width: 400,
-    height: 800,
+    width: 480,
+    height: 840,
     title: "World Simulator",
     webPreferences: {
       preload: join(__dirname, "../preload/index.cjs"),
@@ -32,6 +30,8 @@ async function createWindow() {
     const url = `http://${process.env["VITE_DEV_SERVER_HOST"]}:${process.env["VITE_DEV_SERVER_PORT"]}`;
     win.loadURL(url);
   }
+
+  startWebSocketServer(win.webContents);
 }
 
 app.on("ready", createWindow);
@@ -57,12 +57,6 @@ app.on("activate", () => {
   }
 });
 
-ipcMain.handle("hello", async (_event, msg: string) => {
-  logInfo(`Received IPC message from SolidJS: ${msg}`);
-});
-
 ipcMain.handle("openDevTools", async (_event) => {
   win?.webContents?.openDevTools({ mode: "detach" });
 });
-
-startWebSocketServer();
