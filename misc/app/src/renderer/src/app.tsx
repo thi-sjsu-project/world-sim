@@ -1,22 +1,25 @@
 import { Component, createSignal, onCleanup } from "solid-js";
 import Timeline from "./components/timeline";
 import Header from "./components/header";
+import { TimelineEntry } from "src/main/timelinemgr";
 
-const UPDATE_INTERVAL_MS = 100;
+const [elapsed, setElapsed] = createSignal(0);
+const [timeline, setTimeline] = createSignal<Array<TimelineEntry>>([]);
+
+window.timelineApi.onUpdate((newTimeline: Array<TimelineEntry>) => {
+  setTimeline(newTimeline);
+});
+
+window.timelineApi.onElapsed((elapsedMs: number) => {
+  setElapsed(elapsedMs);
+});
 
 const App: Component = () => {
-  const [timer, setTimer] = createSignal(0);
-  const interval = setInterval(
-    () => setTimer(timer() + UPDATE_INTERVAL_MS),
-    UPDATE_INTERVAL_MS
-  );
-  onCleanup(() => clearInterval(interval));
-
   return (
     <div class="w-screen h-screen bg-zinc-900 text-zinc-300 p-4">
-      <Header timer={timer} setTimer={setTimer} />
+      <Header elapsed={elapsed} />
       <div class="mt-4">
-        <Timeline timer={timer} />
+        <Timeline elapsed={elapsed} timeline={timeline} />
       </div>
     </div>
   );

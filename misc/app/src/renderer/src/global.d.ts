@@ -4,6 +4,7 @@ export {};
 
 type TimelineApi = {
   onUpdate: (callback: (timeline: Array<TimelineEntry>) => void) => void;
+  onElapsed: (callback: (elapsedMs: number) => void) => void;
   requestUpdate: () => void;
 };
 

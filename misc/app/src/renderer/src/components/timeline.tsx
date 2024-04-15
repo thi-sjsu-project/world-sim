@@ -2,31 +2,28 @@
 import { Accessor, Component, For, createMemo, createSignal, onMount } from "solid-js";
 import { TimelineEntry } from "../../../main/timelinemgr";
 
-let [timeline, setTimeline] = createSignal<Array<TimelineEntry>>([]);
-
-window.timelineApi.onUpdate((newTimeline: Array<TimelineEntry>) => {
-  setTimeline(newTimeline);
-});
-
 const Timeline: Component<{
-  timer: Accessor<number>;
+  elapsed: Accessor<number>;
+  timeline: Accessor<Array<TimelineEntry>>;
 }> = (props) => {
   onMount(window.timelineApi.requestUpdate);
 
   return (
-    <For each={timeline()}>
-      {(_, index) => <Entry index={index()} timer={props.timer} />}
+    <For each={props.timeline()}>
+      {(item, index) => (
+        <Entry item={item} index={index()} elapsed={props.elapsed} />
+      )}
     </For>
   );
 };
 
 const Entry: Component<{
-  timer: Accessor<number>;
+  elapsed: Accessor<number>;
+  item: TimelineEntry;
   index: number;
 }> = (props) => {
-  const item = createMemo(() => timeline()[props.index]);
   const dotClass = createMemo(() => {
-    const wasPlayed = props.timer() >= item().delay;
+    const wasPlayed = props.elapsed() >= props.item.delay;
     const dotBackground = wasPlayed ? "bg-green-400" : "bg-zinc-600";
     return `rounded-full w-3 h-3 mr-4 ml-1 inline-block ${dotBackground}`;
   });
@@ -36,9 +33,11 @@ const Entry: Component<{
       <div class={dotClass()}></div>
       <div class="bg-zinc-800 px-2 py-1 rounded-lg inline-block w-[calc(100%-2rem)]">
         <span>
-          Message {props.index}: {item().msg.message?.kind}
+          Message {props.index}: {props.item.msg.message?.kind}
         </span>
-        <span class="float-right text-zinc-500">{item().delay / 1000}s</span>
+        <span class="float-right text-zinc-500">
+          {props.item.delay / 1000}s
+        </span>
       </div>
     </div>
   );
