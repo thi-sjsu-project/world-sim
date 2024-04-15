@@ -10,7 +10,7 @@ const WebSocket: typeof WebSocketType = require("ws");
 const PORT = 6969;
 
 export function startWebSocketServer(webContents: WebContents) {
-  const wss = new WebSocket.Server({ port: PORT });
+  const wss = new WebSocket.Server({ host: "0.0.0.0", port: PORT });
   logInfo(`(ws) running on port ${PORT}`);
 
   const timelineManager = new TimelineManager(webContents);
