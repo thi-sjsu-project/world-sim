@@ -18,7 +18,7 @@ function watchMain(server) {
   });
 
   return build({
-    configFile: "packages/main/vite.config.ts",
+    configFile: "src/main/vite.config.ts",
     mode: "development",
     plugins: [
       {
@@ -40,7 +40,7 @@ function watchMain(server) {
  */
 function watchPreload(server) {
   return build({
-    configFile: "packages/preload/vite.config.ts",
+    configFile: "src/preload/vite.config.ts",
     mode: "development",
     plugins: [
       {
@@ -58,7 +58,7 @@ function watchPreload(server) {
 
 // bootstrap
 const server = await createServer({
-  configFile: "packages/renderer/vite.config.ts",
+  configFile: "src/renderer/vite.config.ts",
 });
 
 await server.listen();

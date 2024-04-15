@@ -1,10 +1,10 @@
 module.exports = {
   content: [
-    "./packages/renderer/index.html",
-    "./packages/renderer/src/**/*.{js,ts,jsx,tsx}",
+    "./src/renderer/index.html",
+    "./src/renderer/src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {},
   },
   plugins: [],
-}
+};

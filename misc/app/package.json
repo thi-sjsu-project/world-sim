@@ -8,7 +8,7 @@
     "dev": "node scripts/watch.mjs",
     "prepare": "ts-patch install && typia patch",
     "build": "npm run typecheck && node scripts/build.mjs && electron-builder --config .electron-builder.config.js",
-    "typecheck": "tsc --noEmit --project packages/renderer/tsconfig.json"
+    "typecheck": "tsc --noEmit --project src/renderer/tsconfig.json"
   },
   "engines": {
     "node": ">=14.17.0"
