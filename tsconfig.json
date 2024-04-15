@@ -1,26 +1,23 @@
 {
+  "extends": "./paths.json",
   "compilerOptions": {
-    "target": "es2016",
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "allowJs": true,
     "skipLibCheck": true,
-    "rootDir": "./",
-    "outDir": "./dist/",
-    "baseUrl": "./",
+    "skipDefaultLibCheck": true,
+    "esModuleInterop": true,
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "strict": true,
     "strictNullChecks": true,
     "plugins": [
-      {
-        "transform": "typia/lib/transform"
-      }
+      {"transform": "typia/lib/transform", }
     ],
-    "paths": {
-      "@message-schemas/*": ["./submodules/message-schemas/*"]
-    }
-  },
-  "include": [
-    "src/",
-    "submodules/message-schemas/"
-  ]
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "outDir": "dist"
+  }
+
+  
 }

@@ -1,5 +1,5 @@
 // prettier-ignore
-import { AcaDefect, AcaFuelLow, AcaHeadingToBase, Message, MissileToOwnshipDetected, RequestApprovalToAttack, SimToCmMessage } from "../../../../submodules/message-schemas/schema-types";
+import { AcaDefect, AcaFuelLow, AcaHeadingToBase, Message, MissileToOwnshipDetected, RequestApprovalToAttack, SimToCmMessage } from "../../submodules/message-schemas/schema-types";
 import typia from "typia";
 import { logError } from "./util";
 import { TimelineEntry } from "./timelinemgr";

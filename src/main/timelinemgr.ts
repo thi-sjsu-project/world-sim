@@ -1,5 +1,5 @@
 import { WebContents, ipcMain } from "electron";
-import { SimToCmMessage } from "../../../../submodules/message-schemas/schema-types";
+import { SimToCmMessage } from "../../submodules/message-schemas/schema-types";
 import { DEFAULT_TIMELINE } from "./messages";
 import { delayMs } from "./util";
 

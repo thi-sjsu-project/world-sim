@@ -2,7 +2,7 @@ import * as WebSocketType from "ws";
 import { logInfo, logError } from "./util";
 import { TimelineManager } from "./timelinemgr";
 import { WebContents } from "electron";
-import { SimToCmMessage } from "../../../../submodules/message-schemas/schema-types";
+import { SimToCmMessage } from "../../submodules/message-schemas/schema-types";
 
 // typeof magic required because typescript stoopid
 const WebSocket: typeof WebSocketType = require("ws");
@@ -57,7 +57,6 @@ export function startWebSocketServer(webContents: WebContents) {
         | number; // returned by closePromise
 
       if (msg && msg instanceof Object) {
-        console.log(msg);
         logInfo(`(ws) sending message ${idx}`);
         ws.send(JSON.stringify(msg));
       } else {
