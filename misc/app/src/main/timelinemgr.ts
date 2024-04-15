@@ -15,12 +15,14 @@ export class TimelineManager {
   private timeline: Array<TimelineEntry>;
   private index: number;
   private elapsedMs: number;
+  private shouldCancel: boolean;
 
   constructor(webContents: WebContents) {
     this.webContents = webContents;
     this.timeline = structuredClone(DEFAULT_TIMELINE);
     this.index = 0;
     this.elapsedMs = 0;
+    this.shouldCancel = false;
 
     ipcMain.handle("timelineUpdateRequest", () => {
       this.sendTimelineToRenderer();
@@ -31,9 +33,11 @@ export class TimelineManager {
   reset() {
     this.index = 0;
     this.elapsedMs = 0;
+    this.shouldCancel = false;
+    this.sendElapsedTimeToRenderer();
   }
 
-  async step(): Promise<SimToCmMessage> {
+  async step(): Promise<SimToCmMessage | null> {
     const lastDelay = this.index == 0 ? 0 : this.timeline[this.index - 1].delay;
     const entry = this.timeline[this.index];
     let delay = entry.delay - lastDelay;
@@ -43,6 +47,10 @@ export class TimelineManager {
       this.elapsedMs += iterDelay;
       delay -= DELAY_STEP_MS;
       this.sendElapsedTimeToRenderer();
+      if (this.shouldCancel) {
+        this.shouldCancel = true;
+        return null;
+      }
     }
     this.index += 1;
     return entry.msg;
@@ -50,6 +58,10 @@ export class TimelineManager {
 
   hasRemainingEntries(): boolean {
     return this.index < this.timeline.length - 1;
+  }
+
+  queueCancel() {
+    this.shouldCancel = true;
   }
 
   get currentIndex(): number {

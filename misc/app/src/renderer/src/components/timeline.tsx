@@ -1,29 +1,24 @@
 // prettier-ignore
-import { Accessor, Component, For, createMemo, createSignal, onMount } from "solid-js";
+import { Component, For, createMemo, onMount } from "solid-js";
 import { TimelineEntry } from "../../../main/timelinemgr";
+import { STATE } from "../app";
 
-const Timeline: Component<{
-  elapsed: Accessor<number>;
-  timeline: Accessor<Array<TimelineEntry>>;
-}> = (props) => {
+const Timeline: Component = () => {
   onMount(window.timelineApi.requestUpdate);
 
   return (
-    <For each={props.timeline()}>
-      {(item, index) => (
-        <Entry item={item} index={index()} elapsed={props.elapsed} />
-      )}
+    <For each={STATE.timeline.get()}>
+      {(item, index) => <Entry item={item} index={index()} />}
     </For>
   );
 };
 
 const Entry: Component<{
-  elapsed: Accessor<number>;
   item: TimelineEntry;
   index: number;
 }> = (props) => {
   const dotClass = createMemo(() => {
-    const wasPlayed = props.elapsed() >= props.item.delay;
+    const wasPlayed = STATE.elapsed.get() >= props.item.delay;
     const dotBackground = wasPlayed ? "bg-green-400" : "bg-zinc-600";
     return `rounded-full w-3 h-3 mr-4 ml-1 inline-block ${dotBackground}`;
   });

@@ -2,6 +2,7 @@ import * as WebSocketType from "ws";
 import { logInfo, logError } from "./util";
 import { TimelineManager } from "./timelinemgr";
 import { WebContents } from "electron";
+import { SimToCmMessage } from "../../../../submodules/message-schemas/schema-types";
 
 // typeof magic required because typescript stoopid
 const WebSocket: typeof WebSocketType = require("ws");
@@ -22,26 +23,46 @@ export function startWebSocketServer(webContents: WebContents) {
       return;
     }
 
+    function close() {
+      ws.close();
+      connectionActive = false;
+      timelineManager.reset();
+      logInfo("(ws) connection closed");
+    }
+
     logInfo("(ws) connection opened");
     connectionActive = true;
     timelineManager.reset();
 
     ws.on("error", (error) => {
       logError(`(ws) error: ${error}`);
-      ws.close();
-      connectionActive = false;
-      return;
+      close();
     });
 
-    while (timelineManager.hasRemainingEntries()) {
+    ws.on("close", close);
+
+    while (connectionActive && timelineManager.hasRemainingEntries()) {
       const idx = timelineManager.currentIndex;
-      const msg = await timelineManager.step();
-      logInfo(`(ws) sending message ${idx}`);
-      ws.send(JSON.stringify(msg));
+      const msgPromise = timelineManager.step();
+      const closePromise = new Promise((resolve) => ws.once("close", resolve));
+
+      const msg = (await Promise.race([msgPromise, closePromise])) as
+        | SimToCmMessage // returned by msgPromise on success
+        | null // returned by msgPromise on error (if socket has been closed)
+        | number; // returned by closePromise
+
+      if (msg && msg instanceof Object) {
+        console.log(msg);
+        logInfo(`(ws) sending message ${idx}`);
+        ws.send(JSON.stringify(msg));
+      } else {
+        timelineManager.queueCancel();
+        break;
+      }
     }
 
-    ws.close();
-    connectionActive = false;
-    logInfo("(ws) connection closed");
+    if (connectionActive) {
+      close();
+    }
   });
 }

@@ -1,11 +1,10 @@
 import { Accessor, Component, Setter, createMemo } from "solid-js";
 import { IconRestore, IconZoomCode } from "@tabler/icons-solidjs";
+import { STATE } from "../app";
 
-const Header: Component<{
-  elapsed: Accessor<number>;
-}> = (props) => {
+const Header: Component = (props) => {
   const formattedTime = createMemo(() =>
-    Math.floor(props.elapsed() / 1000 + Number.EPSILON)
+    Math.floor(STATE.elapsed.get() / 1000 + Number.EPSILON)
   );
 
   return (
