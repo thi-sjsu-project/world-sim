@@ -19,3 +19,7 @@ contextBridge.exposeInMainWorld("timelineApi", {
   onWsUpdate,
   requestUpdate: () => ipcRenderer.invoke("timelineUpdateRequest"),
 });
+
+contextBridge.exposeInMainWorld("openDevTools", () => {
+  ipcRenderer.invoke("openDevTools");
+});

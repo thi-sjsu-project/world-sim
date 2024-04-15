@@ -11,7 +11,7 @@ type TimelineApi = {
 
 declare global {
   interface Window {
-    ipcRendererInvoke: (channel: string, ...args: any[]) => Promise<any>;
+    openDevTools: () => void;
     timelineApi: TimelineApi;
   }
 }

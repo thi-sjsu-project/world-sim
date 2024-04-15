@@ -45,7 +45,7 @@ const Header: Component = () => {
 
       <button
         class="ml-3 text-zinc-600 hover:text-zinc-500 float-right"
-        onclick={() => window.ipcRendererInvoke("openDevTools")}
+        onclick={() => window.openDevTools()}
       >
         <IconZoomCode />
       </button>
