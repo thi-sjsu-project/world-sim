@@ -10,7 +10,14 @@
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "strict": true,
+    "strictNullChecks": true,
+    "plugins": [
+      {"transform": "typia/lib/transform", }
+    ],
     "jsx": "preserve",
-    "jsxImportSource": "solid-js"
+    "jsxImportSource": "solid-js",
+    "outDir": "dist"
   }
+
+  
 }

@@ -27,7 +27,7 @@ export default defineConfig({
   base: "./",
   build: {
     target: "esnext",
-    polyfillDynamicImport: false,
+   //polyfillDynamicImport: false,
     emptyOutDir: true,
     outDir: "../../dist/renderer",
   },
@@ -57,7 +57,7 @@ export function resolveElectron(
     electron: electronExport(),
     ...builtinModulesExport(builtins),
     ...resolves,
-  });
+  })[0];
 
   function electronExport() {
     return `
