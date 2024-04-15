@@ -1,17 +1,12 @@
-import {
-  AcaDefect,
-  AcaFuelLow,
-  AcaHeadingToBase,
-  Message,
-  MissileToOwnshipDetected,
-  RequestApprovalToAttack,
-} from "../../../../submodules/message-schemas/schema-types";
-import { createValidateEquals } from "typia";
+// prettier-ignore
+import { AcaDefect, AcaFuelLow, AcaHeadingToBase, Message, MissileToOwnshipDetected, RequestApprovalToAttack, SimToCmMessage } from "../../../../submodules/message-schemas/schema-types";
+import typia from "typia";
 import { logError } from "./util";
+import { TimelineEntry } from "./timelinemgr";
 
 /* sample messages ********************************************************************************/
 
-const UNVALIDATED_MESSAGES: Array<Message> = [
+const MESSAGES: Array<Message> = [
   // example convo 1: high priority, low threat, no collateral
   {
     id: "AAA27046-14A8-449C-960C-79BE303E71D4",
@@ -188,37 +183,20 @@ const UNVALIDATED_MESSAGES: Array<Message> = [
   } satisfies RequestApprovalToAttack,
 ];
 
-const UNVALIDATED_TIMELINE = [
-  { delay: 0, msg: UNVALIDATED_MESSAGES[0] },
-  { delay: 10_000, msg: UNVALIDATED_MESSAGES[1] },
-  { delay: 12_000, msg: UNVALIDATED_MESSAGES[2] },
-  { delay: 24_000, msg: UNVALIDATED_MESSAGES[3] },
-  { delay: 25_000, msg: UNVALIDATED_MESSAGES[4] },
-  { delay: 28_000, msg: UNVALIDATED_MESSAGES[5] },
-  { delay: 45_000, msg: UNVALIDATED_MESSAGES[6] },
-  { delay: 50_000, msg: UNVALIDATED_MESSAGES[7] },
-  { delay: 55_000, msg: UNVALIDATED_MESSAGES[8] },
-  { delay: 60_000, msg: UNVALIDATED_MESSAGES[9] },
-];
-
 /* validation *************************************************************************************/
 
-const VALIDATORS = {
-  AcaDefect: createValidateEquals<AcaDefect>(),
-  AcaFuelLow: createValidateEquals<AcaFuelLow>(),
-  AcaHeadingToBase: createValidateEquals<AcaHeadingToBase>(),
-  MissileToOwnshipDetected: createValidateEquals<MissileToOwnshipDetected>(),
-  RequestApprovalToAttack: createValidateEquals<RequestApprovalToAttack>(),
-};
+const validator = typia.createValidateEquals<SimToCmMessage>();
 
-function validateMessage(msg: Message): msg is Message {
-  const validator = VALIDATORS[msg.kind];
-  const validationResult = validator(msg);
+function validateTimelineEntry(
+  entry: TimelineEntry,
+  idx: number
+): entry is TimelineEntry {
+  const validationResult = validator(entry.msg);
 
-  if (validationResult.success) {
+  if (entry.delay < 0 || validationResult.success) {
     return true;
   } else {
-    logError(`msg ${msg.id} invalid:`);
+    logError(`entry ${idx} invalid:`);
     for (const error of validationResult.errors) {
       logError(
         ` - ${error.path}, expected ${error.expected}, found value ${error.value}`
@@ -229,6 +207,20 @@ function validateMessage(msg: Message): msg is Message {
   return false;
 }
 
-export const TIMELINE = UNVALIDATED_TIMELINE.filter((entry) =>
-  validateMessage(entry.msg)
+// prettier-ignore
+const UNVALIDATED_TIMELINE: Array<TimelineEntry> = [
+  { delay: 0,      msg: { message: MESSAGES[0], stressLevel: 0.1 } },
+  { delay: 10_000, msg: { message: MESSAGES[1], stressLevel: 0.3 } },
+  { delay: 12_000, msg: { message: MESSAGES[2], stressLevel: 0.7 } },
+  { delay: 24_000, msg: { message: MESSAGES[3], stressLevel: 0.5 } },
+  { delay: 25_000, msg: { message: MESSAGES[4], stressLevel: 0.6 } },
+  { delay: 28_000, msg: { message: MESSAGES[5], stressLevel: 0.9 } },
+  { delay: 45_000, msg: { message: MESSAGES[6], stressLevel: 0.2 } },
+  { delay: 50_000, msg: { message: MESSAGES[7], stressLevel: 0.5 } },
+  { delay: 55_000, msg: { message: MESSAGES[8], stressLevel: 0.7 } },
+  { delay: 60_000, msg: { message: MESSAGES[9], stressLevel: 0.6 } },
+];
+
+export const DEFAULT_TIMELINE = UNVALIDATED_TIMELINE.filter(
+  validateTimelineEntry
 );
