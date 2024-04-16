@@ -1,7 +1,7 @@
 import * as WebSocketType from "ws";
 import { logInfo, logError } from "./util";
 import { TimelineManager } from "./timelinemgr";
-import { WebContents } from "electron";
+import { WebContents, ipcMain } from "electron";
 import { SimToCmMessage } from "../../submodules/message-schemas/schema-types";
 
 // typeof magic required because typescript stoopid
@@ -15,6 +15,10 @@ export function startWebSocketServer(webContents: WebContents) {
 
   const timelineManager = new TimelineManager(webContents);
   let connectionActive = false;
+
+  ipcMain.handle("timelineWsUpdateRequest", () => {
+    webContents.send("timelineWsUpdate", connectionActive);
+  });
 
   wss.on("connection", async (ws) => {
     if (connectionActive) {

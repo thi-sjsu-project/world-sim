@@ -4,7 +4,10 @@ import { TimelineEntry } from "../../../main/timelinemgr";
 import { STATE } from "../app";
 
 const Timeline: Component = () => {
-  onMount(window.timelineApi.requestUpdate);
+  onMount(() => {
+    window.timelineApi.requestUpdate();
+    window.timelineApi.requestWsUpdate();
+  });
 
   return (
     <For each={STATE.timeline.get()}>
@@ -32,7 +35,19 @@ const Entry: Component<{
           Message {props.index}: {props.item.msg.message?.kind}
         </span>
         <span class="float-right text-zinc-500">
-          {props.item.delay / 1000}s
+          <input
+            value={props.item.delay / 1000}
+            class="bg-transparent w-6 inline text-right focus:outline-none border-b border-b-transparent focus:border-b-blue-400 focus:text-zinc-400 hover:border-b-zinc-400 hover:text-zinc-400 disabled:hover:border-b-zinc-500 disabled:hover:text-zinc-500 cursor-pointer disabled:cursor-not-allowed"
+            disabled={STATE.wsConnected.get()}
+            onChange={(e) => {
+              const value = Number(e.currentTarget.value);
+              if (!value) return;
+              const msec = ~~(value * 1000);
+              props.item.delay = msec;
+              window.timelineApi.editEntry(props.index, props.item);
+            }}
+          ></input>
+          s
         </span>
       </div>
     </div>

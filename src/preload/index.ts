@@ -13,11 +13,25 @@ function onWsUpdate(callback: (wsConnected: boolean) => void) {
   ipcRenderer.on("timelineWsUpdate", (_event, value) => callback(value));
 }
 
+function requestUpdate() {
+  ipcRenderer.invoke("timelineUpdateRequest");
+}
+
+function requestWsUpdate() {
+  ipcRenderer.invoke("timelineWsUpdateRequest");
+}
+
+function editEntry(idx: number, data: TimelineEntry) {
+  ipcRenderer.invoke("timelineEditEntry", idx, data);
+}
+
 contextBridge.exposeInMainWorld("timelineApi", {
   onElapsed,
   onUpdate,
   onWsUpdate,
-  requestUpdate: () => ipcRenderer.invoke("timelineUpdateRequest"),
+  requestUpdate,
+  requestWsUpdate,
+  editEntry,
 });
 
 contextBridge.exposeInMainWorld("openDevTools", () => {

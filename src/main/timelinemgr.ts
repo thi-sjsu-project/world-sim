@@ -28,6 +28,14 @@ export class TimelineManager {
       this.sendTimelineToRenderer();
       this.sendElapsedTimeToRenderer();
     });
+
+    ipcMain.handle(
+      "timelineEditEntry",
+      (_event, idx: number, data: TimelineEntry) => {
+        this.timeline[idx] = data;
+        this.sendTimelineToRenderer();
+      }
+    );
   }
 
   reset() {

@@ -7,6 +7,8 @@ type TimelineApi = {
   onElapsed: (callback: (elapsedMs: number) => void) => void;
   onWsUpdate: (callback: (wsConnected: boolean) => void) => void;
   requestUpdate: () => void;
+  requestWsUpdate: () => void;
+  editEntry: (idx: number, data: TimelineEntry) => void;
 };
 
 declare global {
