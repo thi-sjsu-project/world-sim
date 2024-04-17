@@ -10,6 +10,8 @@ type TimelineApi = {
   requestWsUpdate: () => void;
   editEntry: (idx: number, data: TimelineEntry) => void;
   reset: () => void;
+  pause: () => () => void;
+  resume:() => void;
 };
 
 declare global {

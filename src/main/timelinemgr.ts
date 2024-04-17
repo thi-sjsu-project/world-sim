@@ -16,6 +16,7 @@ export class TimelineManager {
   private index: number;
   private elapsedMs: number;
   private shouldCancel: boolean;
+  private paused: boolean;
 
   constructor(webContents: WebContents) {
     this.webContents = webContents;
@@ -23,10 +24,21 @@ export class TimelineManager {
     this.index = 0;
     this.elapsedMs = 0;
     this.shouldCancel = false;
+    this.paused = false;
 
     ipcMain.handle("timelineUpdateRequest", () => {
       this.sendTimelineToRenderer();
       this.sendElapsedTimeToRenderer();
+    });
+
+    ipcMain.handle("pause", () => {
+      this.paused = true;
+    });
+
+    ipcMain.handle("resume", () => {
+      
+    
+      this.paused = false;
     });
 
     ipcMain.handle(
@@ -55,6 +67,12 @@ export class TimelineManager {
     let delay = entry.delay - lastDelay;
     while (delay > 0) {
       const iterDelay = Math.min(delay, DELAY_STEP_MS);
+
+      //thomas dont get mad at me for this pls lol im sure there is a better way
+      // but uhhh its a funny solution. Trap them in a delay loop until unpaused
+      while(this.paused){
+        await delayMs(1);
+      }
       await delayMs(iterDelay);
       this.elapsedMs += iterDelay;
       delay -= DELAY_STEP_MS;

@@ -29,6 +29,14 @@ function reset(){
   ipcRenderer.invoke("reset");
 }
 
+function pause(){
+  ipcRenderer.invoke("pause");
+}
+
+function resume(){
+  ipcRenderer.invoke("resume");
+}
+
 contextBridge.exposeInMainWorld("timelineApi", {
   onElapsed,
   onUpdate,
@@ -37,6 +45,8 @@ contextBridge.exposeInMainWorld("timelineApi", {
   requestWsUpdate,
   editEntry,
   reset,
+  pause,
+  resume,
 });
 
 contextBridge.exposeInMainWorld("openDevTools", () => {
