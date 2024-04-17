@@ -4,6 +4,7 @@ import {
   IconPlugConnectedX,
   IconRestore,
   IconZoomCode,
+  IconWorldPause,
 } from "@tabler/icons-solidjs";
 import { STATE } from "../app";
 
@@ -17,6 +18,9 @@ const handleResetClick = () => {
   window.timelineApi.reset();
 }
 
+const handlePauseClick = () => {
+  
+}
   
   return (
     <div class="pb-2 border-b border-b-zinc-700">
@@ -46,8 +50,16 @@ const handleResetClick = () => {
       >
         <IconRestore />
       </button>
+      <span class="align-[.375rem] mr-3">{formattedTime()}s</span>
 
-      <span class="align-[.375rem]">{formattedTime()}s</span>
+      <button
+        class="mr-3 text-zinc-600 hover:text-zinc-500"
+        onclick={ handlePauseClick /*props.setTimer(0)*/}
+        title="Pause timeline"
+      >
+        <IconWorldPause />
+      </button>
+
 
       <button
         class="ml-3 text-zinc-600 hover:text-zinc-500 float-right"
