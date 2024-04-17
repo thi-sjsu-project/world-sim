@@ -12,6 +12,12 @@ const Header: Component = () => {
     Math.floor(STATE.elapsed.get() / 1000 + Number.EPSILON)
   );
 
+
+const handleResetClick = () => {
+  window.timelineApi.reset();
+}
+
+  
   return (
     <div class="pb-2 border-b border-b-zinc-700">
       <Show
@@ -35,7 +41,7 @@ const Header: Component = () => {
 
       <button
         class="mr-3 text-zinc-600 hover:text-zinc-500"
-        onclick={() => null /*props.setTimer(0)*/}
+        onclick={ handleResetClick /*props.setTimer(0)*/}
         title="Restart timeline"
       >
         <IconRestore />

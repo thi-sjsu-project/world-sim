@@ -36,6 +36,10 @@ export class TimelineManager {
         this.sendTimelineToRenderer();
       }
     );
+
+    // ipcMain.handle("reset", () => {
+    //   this.reset();
+    // });
   }
 
   reset() {

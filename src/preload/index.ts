@@ -25,6 +25,10 @@ function editEntry(idx: number, data: TimelineEntry) {
   ipcRenderer.invoke("timelineEditEntry", idx, data);
 }
 
+function reset(){
+  ipcRenderer.invoke("reset");
+}
+
 contextBridge.exposeInMainWorld("timelineApi", {
   onElapsed,
   onUpdate,
@@ -32,6 +36,7 @@ contextBridge.exposeInMainWorld("timelineApi", {
   requestUpdate,
   requestWsUpdate,
   editEntry,
+  reset,
 });
 
 contextBridge.exposeInMainWorld("openDevTools", () => {
