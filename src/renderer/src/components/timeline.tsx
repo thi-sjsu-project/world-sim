@@ -34,6 +34,14 @@ const Entry: Component<{
         <span>
           Message {props.index}: {props.item.msg.message?.kind}
         </span>
+        <span>
+          <br />
+          Priority Level: {props.item.msg.message?.priority}
+        </span>
+        <span>
+          <br />
+          Stress Level: {props.item.msg.stressLevel}
+        </span>
         <span class="float-right text-zinc-500">
           <input
             value={props.item.delay / 1000}
