@@ -71,7 +71,7 @@ export class TimelineManager {
       //thomas dont get mad at me for this pls lol im sure there is a better way
       // but uhhh its a funny solution. Trap them in a delay loop until unpaused
       while(this.paused){
-        await delayMs(1);
+        await delayMs(DELAY_STEP_MS);
       }
       await delayMs(iterDelay);
       this.elapsedMs += iterDelay;
