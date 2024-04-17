@@ -4,8 +4,8 @@ import {
   IconPlugConnectedX,
   IconRestore,
   IconZoomCode,
-  IconWorldPause,
-  IconWorldShare,
+  IconPlayerPause,
+  IconPlayerPlay,
 } from "@tabler/icons-solidjs";
 import { STATE } from "../app";
 
@@ -64,7 +64,7 @@ const handleResumeClick = () => {
         onclick={ handlePauseClick}
         title="Pause timeline"
       >
-        <IconWorldPause />
+        <IconPlayerPause />
       </button>
 
       <button
@@ -72,7 +72,7 @@ const handleResumeClick = () => {
         onclick={ handleResumeClick}
         title="Resume timeline"
       >
-        <IconWorldShare />
+        <IconPlayerPlay />
       </button>
 
 
