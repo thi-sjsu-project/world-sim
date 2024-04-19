@@ -66,13 +66,15 @@ export class TimelineManager {
     const entry = this.timeline[this.index];
     let delay = entry.delay - lastDelay;
     while (delay > 0) {
-      const iterDelay = Math.min(delay, DELAY_STEP_MS);
+  
 
       //thomas dont get mad at me for this pls lol im sure there is a better way
       // but uhhh its a funny solution. Trap them in a delay loop until unpaused
       while(this.paused){
         await delayMs(DELAY_STEP_MS);
       }
+
+      const iterDelay = Math.min(delay, DELAY_STEP_MS);
       await delayMs(iterDelay);
       this.elapsedMs += iterDelay;
       delay -= DELAY_STEP_MS;
@@ -87,7 +89,7 @@ export class TimelineManager {
   }
 
   hasRemainingEntries(): boolean {
-    return this.index < this.timeline.length - 1;
+    return this.index <= this.timeline.length - 1;
   }
 
   queueCancel() {
