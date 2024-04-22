@@ -6,6 +6,7 @@ import {
   IconZoomCode,
   IconPlayerPause,
   IconPlayerPlay,
+  IconMessageCirclePlus
 } from "@tabler/icons-solidjs";
 import { STATE } from "../app";
 
@@ -26,6 +27,11 @@ const handlePauseClick = () => {
 
 const handleResumeClick = () => {
   window.timelineApi.resume();
+
+}
+
+const handleCreateClick = () => {
+  window.timelineApi.create();
 
 }
   
@@ -75,6 +81,13 @@ const handleResumeClick = () => {
         <IconPlayerPlay />
       </button>
 
+      <button
+        class="mr-3 text-zinc-600 hover:text-zinc-500"
+        onclick={ handleCreateClick}
+        title="Create Message"
+      >
+        <IconMessageCirclePlus />
+      </button>
 
       <button
         class="ml-3 text-zinc-600 hover:text-zinc-500 float-right"

@@ -12,6 +12,7 @@ type TimelineApi = {
   reset: () => void;
   pause: () => () => void;
   resume:() => void;
+  create: () => void;
 };
 
 declare global {

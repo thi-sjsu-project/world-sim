@@ -3,6 +3,7 @@ import { AcaDefect, AcaFuelLow, AcaHeadingToBase, Message, MissileToOwnshipDetec
 import typia from "typia";
 import { logError } from "./util";
 import { TimelineEntry } from "./timelinemgr";
+import {ipcMain} from "electron"; 
 
 /* sample messages ********************************************************************************/
 
@@ -183,6 +184,15 @@ const MESSAGES: Array<Message> = [
   } satisfies RequestApprovalToAttack,
 ];
 
+//when the user hits create button in header.tsx this function is called
+// add the new created message to the messages array
+//and validate
+
+ipcMain.handle("create", () => {
+  
+
+
+});
 /* validation *************************************************************************************/
 
 const validator = typia.createValidateEquals<SimToCmMessage>();

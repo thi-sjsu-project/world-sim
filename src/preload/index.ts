@@ -36,6 +36,9 @@ function pause(){
 function resume(){
   ipcRenderer.invoke("resume");
 }
+function create(){
+  ipcRenderer.invoke("create");
+}
 
 contextBridge.exposeInMainWorld("timelineApi", {
   onElapsed,
@@ -47,6 +50,7 @@ contextBridge.exposeInMainWorld("timelineApi", {
   reset,
   pause,
   resume,
+  create,
 });
 
 contextBridge.exposeInMainWorld("openDevTools", () => {
