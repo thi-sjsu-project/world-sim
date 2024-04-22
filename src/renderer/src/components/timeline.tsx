@@ -24,7 +24,7 @@ const Entry: Component<{
     const wasPlayed =
       STATE.wsConnected.get() && STATE.elapsed.get() >= props.item.delay;
     const dotBackground = wasPlayed ? "bg-green-400" : "bg-zinc-600";
-    return `rounded-full w-3 h-3 mr-4 ml-1 inline-block ${dotBackground}`;
+    return `rounded-full w-3 h-3 mr-4 ml-1 inline-block ${dotBackground} align-[1.3rem]`;
   });
 
   return (
@@ -34,46 +34,48 @@ const Entry: Component<{
         <span>
           Message {props.index}: {props.item.msg.message?.kind}
         </span>
-        <span>
+        <span class="text-sm">
           <br />
-            Priority Level: {/*props.item.msg.message?.priority*/
+          Priority Level:{" "}
+          {
+            /*props.item.msg.message?.priority*/
             <input
-            value={props.item.msg.message?.priority}
-            class="bg-transparent w-6 inline text-right focus:outline-none border-b border-b-transparent focus:border-b-blue-400 focus:text-zinc-400 hover:border-b-zinc-400 hover:text-zinc-400 disabled:hover:border-b-zinc-500 disabled:hover:text-zinc-500 cursor-pointer disabled:cursor-not-allowed"
-            disabled={STATE.wsConnected.get()}
-            onChange={(e) => {
-              const value = Number(e.currentTarget.value);
-              if (!value) return;
-              const msec = (value);
-              //bit hackish but it works message! is bypassing the null check of typescript
-              //🫠🫠🫠🫠🫠🫠🫠🫠🫠🫠🫠🫠🫠🫠🫠🫠🫠🫠🫠🫠🫠🫠🫠🫠🫠
-              props.item.msg.message!.priority = msec;
-              window.timelineApi.editEntry(props.index, props.item);
-            }}
-          ></input>
-            }
+              value={props.item.msg.message?.priority}
+              class="bg-transparent w-6 inline text-right focus:outline-none border-b border-b-zinc-700 focus:border-b-blue-400 focus:text-zinc-400 hover:border-b-zinc-400 hover:text-zinc-400 disabled:hover:border-b-zinc-500 disabled:hover:text-zinc-500 cursor-pointer disabled:cursor-not-allowed disabled:border-b-transparent"
+              disabled={STATE.wsConnected.get()}
+              onChange={(e) => {
+                const value = Number(e.currentTarget.value);
+                if (!value) return;
+                const msec = value;
+                //bit hackish but it works message! is bypassing the null check of typescript
+                props.item.msg.message!.priority = msec;
+                window.timelineApi.editEntry(props.index, props.item);
+              }}
+            ></input>
+          }
         </span>
-        <span>
-          <br />
-          Stress Level: {/*props.item.msg.stressLevel*/
-           <input
-           value={props.item.msg.stressLevel}
-           class="bg-transparent w-6 inline text-right focus:outline-none border-b border-b-transparent focus:border-b-blue-400 focus:text-zinc-400 hover:border-b-zinc-400 hover:text-zinc-400 disabled:hover:border-b-zinc-500 disabled:hover:text-zinc-500 cursor-pointer disabled:cursor-not-allowed"
-           disabled={STATE.wsConnected.get()}
-           onChange={(e) => {
-             const value = Number(e.currentTarget.value);
-             if (!value) return;
-             const msec = (value);
-             props.item.msg.stressLevel = msec;
-             window.timelineApi.editEntry(props.index, props.item);
-           }}
-         ></input>
+        <span class="text-sm">
+          &nbsp; &nbsp; &nbsp; Stress Level:{" "}
+          {
+            /*props.item.msg.stressLevel*/
+            <input
+              value={props.item.msg.stressLevel}
+              class="bg-transparent w-6 inline text-right focus:outline-none border-b border-b-zinc-700 focus:border-b-blue-400 focus:text-zinc-400 hover:border-b-zinc-400 hover:text-zinc-400 disabled:hover:border-b-zinc-500 disabled:hover:text-zinc-500 cursor-pointer disabled:cursor-not-allowed disabled:border-b-transparent"
+              disabled={STATE.wsConnected.get()}
+              onChange={(e) => {
+                const value = Number(e.currentTarget.value);
+                if (!value) return;
+                const msec = value;
+                props.item.msg.stressLevel = msec;
+                window.timelineApi.editEntry(props.index, props.item);
+              }}
+            ></input>
           }
         </span>
         <span class="float-right text-zinc-500">
           <input
             value={props.item.delay / 1000}
-            class="bg-transparent w-6 inline text-right focus:outline-none border-b border-b-transparent focus:border-b-blue-400 focus:text-zinc-400 hover:border-b-zinc-400 hover:text-zinc-400 disabled:hover:border-b-zinc-500 disabled:hover:text-zinc-500 cursor-pointer disabled:cursor-not-allowed"
+            class="bg-transparent w-6 inline text-right focus:outline-none border-b border-b-zinc-700 focus:border-b-blue-400 focus:text-zinc-400 hover:border-b-zinc-400 hover:text-zinc-400 disabled:hover:border-b-zinc-500 disabled:hover:text-zinc-500 cursor-pointer disabled:cursor-not-allowed disabled:border-b-transparent"
             disabled={STATE.wsConnected.get()}
             onChange={(e) => {
               const value = Number(e.currentTarget.value);

@@ -16,17 +16,15 @@ export function startWebSocketServer(webContents: WebContents) {
   const timelineManager = new TimelineManager(webContents);
   let connectionActive = false;
 
-
   ipcMain.handle("timelineWsUpdateRequest", () => {
     webContents.send("timelineWsUpdate", connectionActive);
   });
 
   wss.on("connection", async (ws) => {
-    
     if (connectionActive) {
       logError("(ws) rejected duplicate connection");
       ws.close();
-      return; 
+      return;
     }
     function setActive(active: boolean) {
       connectionActive = active;
@@ -40,12 +38,11 @@ export function startWebSocketServer(webContents: WebContents) {
       logInfo("(ws) connection closed");
       ipcMain.removeHandler("reset");
     }
-    
+
     ipcMain.handle("reset", () => {
-      ws.send("{\reset\": true}");
+      ws.send('{\reset": true}');
       close();
-      // wss = new WebSocket.Server({ host: "0.0.0.0", port: PORT });
-   });
+    });
 
     logInfo("(ws) connection opened");
     setActive(true);

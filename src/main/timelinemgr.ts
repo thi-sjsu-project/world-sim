@@ -36,8 +36,6 @@ export class TimelineManager {
     });
 
     ipcMain.handle("resume", () => {
-      
-    
       this.paused = false;
     });
 
@@ -58,6 +56,7 @@ export class TimelineManager {
     this.index = 0;
     this.elapsedMs = 0;
     this.shouldCancel = false;
+    this.paused = false;
     this.sendElapsedTimeToRenderer();
   }
 
@@ -66,11 +65,10 @@ export class TimelineManager {
     const entry = this.timeline[this.index];
     let delay = entry.delay - lastDelay;
     while (delay > 0) {
-  
-
-      //thomas dont get mad at me for this pls lol im sure there is a better way
-      // but uhhh its a funny solution. Trap them in a delay loop until unpaused
-      while(this.paused){
+      while (this.paused) {
+        if (this.shouldCancel) {
+          return null;
+        }
         await delayMs(DELAY_STEP_MS);
       }
 
@@ -80,7 +78,6 @@ export class TimelineManager {
       delay -= DELAY_STEP_MS;
       this.sendElapsedTimeToRenderer();
       if (this.shouldCancel) {
-        this.shouldCancel = true;
         return null;
       }
     }
