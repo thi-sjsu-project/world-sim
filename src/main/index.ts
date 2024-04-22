@@ -13,8 +13,8 @@ let win: BrowserWindow | null = null;
 
 async function createWindow() {
   win = new BrowserWindow({
-    width: 960,
-    height: 1680,
+    width: 480,
+    height: 960,
     title: "World Simulator",
     webPreferences: {
       preload: join(__dirname, "../preload/index.cjs"),

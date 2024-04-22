@@ -26,38 +26,34 @@ export function startWebSocketServer(webContents: WebContents) {
       ws.close();
       return;
     }
+
+    const player = timelineManager.start();
+
     function setActive(active: boolean) {
       connectionActive = active;
       webContents.send("timelineWsUpdate", active);
     }
 
-    function close() {
-      ws.close();
+    function closeHandler() {
       setActive(false);
-      timelineManager.reset();
+      player.stop();
       logInfo("(ws) connection closed");
       ipcMain.removeHandler("reset");
+      player.stop();
     }
 
     ipcMain.handle("reset", () => {
-      ws.send('{\reset": true}');
-      close();
+      ws.close();
     });
+
+    ws.on("close", closeHandler);
 
     logInfo("(ws) connection opened");
     setActive(true);
-    timelineManager.reset();
 
-    ws.on("error", (error) => {
-      logError(`(ws) error: ${error}`);
-      close();
-    });
-
-    ws.on("close", close);
-
-    while (connectionActive && timelineManager.hasRemainingEntries()) {
-      const idx = timelineManager.currentIndex;
-      const msgPromise = timelineManager.step();
+    while (connectionActive && player.hasRemainingEntries()) {
+      const idx = player.currentIndex;
+      const msgPromise = player.step();
       const closePromise = new Promise((resolve) => ws.once("close", resolve));
 
       const msg = (await Promise.race([msgPromise, closePromise])) as
@@ -69,13 +65,10 @@ export function startWebSocketServer(webContents: WebContents) {
         logInfo(`(ws) sending message ${idx}`);
         ws.send(JSON.stringify(msg));
       } else {
-        timelineManager.queueCancel();
         break;
       }
     }
 
-    if (connectionActive) {
-      close();
-    }
+    player.stop();
   });
 }

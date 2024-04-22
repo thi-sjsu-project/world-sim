@@ -13,30 +13,13 @@ export type TimelineEntry = {
 export class TimelineManager {
   private webContents: WebContents;
   private timeline: Array<TimelineEntry>;
-  private index: number;
-  private elapsedMs: number;
-  private shouldCancel: boolean;
-  private paused: boolean;
 
   constructor(webContents: WebContents) {
     this.webContents = webContents;
     this.timeline = structuredClone(DEFAULT_TIMELINE);
-    this.index = 0;
-    this.elapsedMs = 0;
-    this.shouldCancel = false;
-    this.paused = false;
 
     ipcMain.handle("timelineUpdateRequest", () => {
       this.sendTimelineToRenderer();
-      this.sendElapsedTimeToRenderer();
-    });
-
-    ipcMain.handle("pause", () => {
-      this.paused = true;
-    });
-
-    ipcMain.handle("resume", () => {
-      this.paused = false;
     });
 
     ipcMain.handle(
@@ -46,24 +29,54 @@ export class TimelineManager {
         this.sendTimelineToRenderer();
       }
     );
-
-    // ipcMain.handle("reset", () => {
-    //   this.reset();
-    // });
   }
 
-  reset() {
-    this.index = 0;
+  start(): TimelinePlayer {
+    return new TimelinePlayer(this.webContents, this.timeline);
+  }
+
+  private sendTimelineToRenderer() {
+    this.webContents.send("timelineUpdate", this.timeline);
+  }
+}
+
+export class TimelinePlayer {
+  private webContents: WebContents;
+  private timeline: Array<TimelineEntry>;
+  private elapsedMs: number;
+  private index: number;
+  private paused: boolean;
+  private shouldCancel: boolean;
+
+  constructor(webContents: WebContents, timeline: Array<TimelineEntry>) {
+    this.webContents = webContents;
+    this.timeline = structuredClone(timeline);
     this.elapsedMs = 0;
-    this.shouldCancel = false;
+    this.index = 0;
     this.paused = false;
-    this.sendElapsedTimeToRenderer();
+    this.shouldCancel = false;
+
+    ipcMain.handle("pause", () => {
+      this.paused = true;
+    });
+
+    ipcMain.handle("resume", () => {
+      this.paused = false;
+    });
   }
 
-  async step(): Promise<SimToCmMessage | null> {
+  stop() {
+    this.shouldCancel = true;
+
+    ipcMain.removeHandler("pause");
+    ipcMain.removeHandler("resume");
+  }
+
+  async step() {
     const lastDelay = this.index == 0 ? 0 : this.timeline[this.index - 1].delay;
     const entry = this.timeline[this.index];
     let delay = entry.delay - lastDelay;
+
     while (delay > 0) {
       while (this.paused) {
         if (this.shouldCancel) {
@@ -76,11 +89,13 @@ export class TimelineManager {
       await delayMs(iterDelay);
       this.elapsedMs += iterDelay;
       delay -= DELAY_STEP_MS;
+
       this.sendElapsedTimeToRenderer();
       if (this.shouldCancel) {
         return null;
       }
     }
+
     this.index += 1;
     return entry.msg;
   }
@@ -89,16 +104,8 @@ export class TimelineManager {
     return this.index <= this.timeline.length - 1;
   }
 
-  queueCancel() {
-    this.shouldCancel = true;
-  }
-
   get currentIndex(): number {
     return this.index;
-  }
-
-  private sendTimelineToRenderer() {
-    this.webContents.send("timelineUpdate", this.timeline);
   }
 
   private sendElapsedTimeToRenderer() {
