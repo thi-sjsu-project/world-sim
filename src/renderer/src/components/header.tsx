@@ -2,7 +2,7 @@ import { Accessor, Component, Setter, Show, createMemo } from "solid-js";
 import {
   IconPlugConnected,
   IconPlugConnectedX,
-  IconRestore,
+  IconPower,
   IconZoomCode,
   IconPlayerPause,
   IconPlayerPlay,
@@ -55,7 +55,7 @@ const handleResumeClick = () => {
         onclick={ handleResetClick}
         title="Restart timeline"
       >
-        <IconRestore />
+        <IconPower />
       </button>
       <span class="align-[.375rem] mr-3">{formattedTime()}s</span>
 
