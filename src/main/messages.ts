@@ -1,7 +1,7 @@
 // prettier-ignore
 import { AcaDefect, AcaFuelLow, AcaHeadingToBase, Message, MissileToOwnshipDetected, RequestApprovalToAttack, SimToCmMessage } from "../../submodules/message-schemas/schema-types";
 import typia from "typia";
-import { logError } from "./util";
+import { logError, logInfo } from "./util";
 import { TimelineEntry } from "./timelinemgr";
 import {ipcMain} from "electron"; 
 
@@ -182,17 +182,9 @@ const MESSAGES: Array<Message> = [
       choiceWeight: 0.4,
     },
   } satisfies RequestApprovalToAttack,
-];
-
-//when the user hits create button in header.tsx this function is called
-// add the new created message to the messages array
-//and validate
-
-ipcMain.handle("create", () => {
-  
+] as const;
 
 
-});
 /* validation *************************************************************************************/
 
 const validator = typia.createValidateEquals<SimToCmMessage>();

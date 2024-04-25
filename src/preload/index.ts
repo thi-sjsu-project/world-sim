@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
+import {SimToCmMessage } from "@messages-schemas/schema-types";
 import { TimelineEntry } from "src/main/timelinemgr";
 
 function onUpdate(callback: (timeline: Array<TimelineEntry>) => void) {
@@ -36,8 +37,8 @@ function pause(){
 function resume(){
   ipcRenderer.invoke("resume");
 }
-function create(){
-  ipcRenderer.invoke("create");
+function create(message: SimToCmMessage){
+  ipcRenderer.invoke("create", message);
 }
 
 contextBridge.exposeInMainWorld("timelineApi", {

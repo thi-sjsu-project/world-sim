@@ -2,6 +2,7 @@ import { WebContents, ipcMain } from "electron";
 import { SimToCmMessage } from "../../submodules/message-schemas/schema-types";
 import { DEFAULT_TIMELINE } from "./messages";
 import { delayMs } from "./util";
+import typia from "typia";
 
 const DELAY_STEP_MS = 100;
 
@@ -47,9 +48,27 @@ export class TimelineManager {
       }
     );
 
-    // ipcMain.handle("reset", () => {
-    //   this.reset();
-    // });
+    ipcMain.handle("create", (_, message: SimToCmMessage) => {
+  
+      const validator = typia.createValidateEquals<SimToCmMessage>();
+      const validationResult = validator(message);
+    
+    
+      console.log(message);
+    
+      if (validationResult.success) {
+        const entry: TimelineEntry = {
+          delay: this.timeline[this.timeline.length - 1].delay + 5000,
+          msg: message,
+        };
+        this.timeline.push(entry);
+      
+        this.sendTimelineToRenderer();
+        return true;
+  
+      }
+    
+    });
   }
 
   reset() {
@@ -98,6 +117,7 @@ export class TimelineManager {
   }
 
   private sendTimelineToRenderer() {
+    console.log(this.timeline);
     this.webContents.send("timelineUpdate", this.timeline);
   }
 
