@@ -34,7 +34,8 @@ const handleResumeClick = () => {
 
 const handleCreateClick = () => {
   console.log("create");
-  //declare a message and send it to the ipc create
+  
+
   const message: SimToCmMessage = {
      message:  {
       id: "ABB27046-14A8-449C-960C-79BE303E71D4",

@@ -54,7 +54,7 @@ export class TimelineManager {
       const validationResult = validator(message);
     
     
-      console.log(message);
+      // console.log(message);
     
       if (validationResult.success) {
         const entry: TimelineEntry = {
@@ -68,6 +68,12 @@ export class TimelineManager {
   
       }
     
+    });
+
+
+    ipcMain.handle("deleteEntry", (_, idx: number) => {
+      this.timeline.splice(idx, 1);
+      this.sendTimelineToRenderer();
     });
   }
 

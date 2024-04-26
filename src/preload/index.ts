@@ -41,6 +41,10 @@ function create(message: SimToCmMessage){
   ipcRenderer.invoke("create", message);
 }
 
+function deleteEntry(idx : number){
+  ipcRenderer.invoke("deleteEntry", idx);
+}
+
 contextBridge.exposeInMainWorld("timelineApi", {
   onElapsed,
   onUpdate,
@@ -52,6 +56,7 @@ contextBridge.exposeInMainWorld("timelineApi", {
   pause,
   resume,
   create,
+  deleteEntry,
 });
 
 contextBridge.exposeInMainWorld("openDevTools", () => {

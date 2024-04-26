@@ -14,6 +14,7 @@ type TimelineApi = {
   pause: () => () => void;
   resume:() => void;
   create: (message: SimToCmMessage) => void;
+  deleteEntry: (idx : number) => void;
 };
 
 declare global {
