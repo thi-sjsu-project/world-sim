@@ -3,9 +3,27 @@
 @tailwind utilities;
 
 @layer base {
+  *::-webkit-scrollbar {
+    width: 14px;
+  }
+
+  *::-webkit-scrollbar-corner {
+    @apply bg-transparent;
+  }
+
+  *::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    @apply bg-zinc-700;
+    border-left: 8px solid transparent;
+    background-clip: padding-box;
+  }
+
   body {
-    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
-      "Segoe UI", "Helvetica Neue", "Helvetica", sans-serif;
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
+      "Helvetica", sans-serif;
   }
 
   button {

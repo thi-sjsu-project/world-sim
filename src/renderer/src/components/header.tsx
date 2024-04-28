@@ -5,6 +5,8 @@ import { SimToCmMessage } from "../../../../submodules/message-schemas/schema-ty
 import { v4 as uuid } from "uuid";
 import { STATE } from "../app";
 
+// TODO: componentize header buttons
+
 const Header: Component = () => {
   return (
     <div class="pb-2 border-b border-b-zinc-700">
@@ -102,15 +104,9 @@ const PauseButton: Component = () => {
 };
 
 const ReadFileButton: Component = () => {
-  const buttonClass = createMemo(() => {
-    let c = "mr-3 text-zinc-600 hover:text-zinc-500 pl-3 border-l border-l-zinc-700";
-    if (STATE.wsConnected.get()) c += " cursor-pointer text-zinc-700 hover:text-zinc-700";
-    return c;
-  });
-
   return (
     <button
-      class={buttonClass()}
+      class="mr-3 text-zinc-600 hover:text-zinc-500 pl-3 border-l border-l-zinc-700 disabled:cursor-not-allowed disabled:text-zinc-800 disabled:hover:text-zinc-800"
       onclick={undefined}
       title="Read timeline from JSON file"
       disabled={STATE.wsConnected.get()}
@@ -162,9 +158,10 @@ const AddMessageButton: Component = () => {
 
   return (
     <button
-      class="mr-3 text-zinc-600 hover:text-zinc-500"
+      class="mr-3 text-zinc-600 hover:text-zinc-500 disabled:cursor-not-allowed disabled:text-zinc-800 disabled:hover:text-zinc-800"
       onclick={handleCreateClick}
       title="Create Message"
+      disabled={STATE.wsConnected.get()}
     >
       <IconMessageCirclePlus />
     </button>

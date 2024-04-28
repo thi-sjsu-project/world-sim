@@ -1,7 +1,7 @@
 import { Component, For, JSX, createMemo, onMount } from "solid-js";
 import { TimelineEntry } from "../../../main/timelinemgr";
 import { STATE } from "../app";
-import { IconTrash } from "@tabler/icons-solidjs";
+import { IconEdit, IconPencil, IconTrash } from "@tabler/icons-solidjs";
 
 const Timeline: Component = () => {
   onMount(() => {
@@ -10,7 +10,7 @@ const Timeline: Component = () => {
   });
 
   return (
-    <div class="mt-4">
+    <div class="mt-4 h-[calc(100vh-5.5rem)] overflow-auto">
       <For each={STATE.timeline.get()}>
         {(item, index) => <Entry item={item} index={index()} />}
       </For>
@@ -25,17 +25,35 @@ const Entry: Component<{
   const dotClass = createMemo(() => {
     const wasPlayed = STATE.wsConnected.get() && STATE.elapsed.get() >= props.item.delay;
     const dotBackground = wasPlayed ? "bg-green-400" : "bg-zinc-600";
-    return `rounded-full w-3 h-3 mr-4 ml-1 inline-block ${dotBackground} align-[1.3rem]`;
+    return `rounded-full w-3 h-3 mr-3 ml-1 inline-block ${dotBackground} align-[1.3rem]`;
   });
 
   return (
     <div class="mb-2">
       <div class={dotClass()}></div>
 
-      <div class="bg-zinc-800 px-2 py-1 rounded-lg inline-block w-[calc(100%-2rem)]">
+      <div class="bg-zinc-800 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)]">
         <span>
           Message {props.index}: {props.item.msg.message?.kind}
         </span>
+
+        <div class="float-right text-zinc-500">
+          <button
+            class="hover:text-zinc-400 disabled:cursor-not-allowed disabled:text-zinc-700 disabled:hover:text-zinc-700"
+            onClick={undefined}
+            disabled={STATE.wsConnected.get()}
+          >
+            <IconPencil size={16} />
+          </button>
+          <br />
+          <button
+            class="hover:text-red-400 disabled:cursor-not-allowed disabled:text-zinc-700 disabled:hover:text-zinc-700"
+            onClick={() => window.timelineApi.deleteEntry(props.index)}
+            disabled={STATE.wsConnected.get()}
+          >
+            <IconTrash size={16} />
+          </button>
+        </div>
 
         <span class="text-sm">
           <br />
@@ -58,16 +76,6 @@ const Entry: Component<{
               window.timelineApi.editEntry(props.index, props.item);
             }}
           />
-        </span>
-
-        <span class="float-right">
-          <button
-            onClick={() => {
-              window.timelineApi.deleteEntry(props.index);
-            }}
-          >
-            <IconTrash />
-          </button>
         </span>
 
         <span class="float-right text-zinc-500 mr-4">
