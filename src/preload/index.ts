@@ -3,15 +3,15 @@ import { SimToCmMessage } from "@messages-schemas/schema-types";
 import { TimelineEntry } from "src/main/timelinemgr";
 
 function onUpdate(callback: (timeline: Array<TimelineEntry>) => void) {
-  ipcRenderer.on("timelineUpdate", (_event, value) => callback(value));
+  ipcRenderer.on("timelineUpdate", (_, value) => callback(value));
 }
 
 function onElapsed(callback: (elapsedMs: number) => void) {
-  ipcRenderer.on("timelineElapsed", (_event, value) => callback(value));
+  ipcRenderer.on("timelineElapsed", (_, value) => callback(value));
 }
 
 function onWsUpdate(callback: (wsConnected: boolean) => void) {
-  ipcRenderer.on("timelineWsUpdate", (_event, value) => callback(value));
+  ipcRenderer.on("timelineWsUpdate", (_, value) => callback(value));
 }
 
 function requestUpdate() {
@@ -62,4 +62,8 @@ contextBridge.exposeInMainWorld("timelineApi", {
 
 contextBridge.exposeInMainWorld("openDevTools", () => {
   ipcRenderer.invoke("openDevTools");
+});
+
+contextBridge.exposeInMainWorld("onAlert", (callback: (t: string) => void) => {
+  ipcRenderer.on("alert", (_, value) => callback(value));
 });

@@ -10,9 +10,11 @@ const Timeline: Component = () => {
   });
 
   return (
-    <For each={STATE.timeline.get()}>
-      {(item, index) => <Entry item={item} index={index()} />}
-    </For>
+    <div class="mt-4">
+      <For each={STATE.timeline.get()}>
+        {(item, index) => <Entry item={item} index={index()} />}
+      </For>
+    </div>
   );
 };
 

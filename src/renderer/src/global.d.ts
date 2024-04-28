@@ -19,7 +19,8 @@ type TimelineApi = {
 
 declare global {
   interface Window {
-    openDevTools: () => void;
     timelineApi: TimelineApi;
+    onAlert: (callback: (text: string) => void) => void;
+    openDevTools: () => void;
   }
 }

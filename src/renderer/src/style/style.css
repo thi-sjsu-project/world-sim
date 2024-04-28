@@ -11,4 +11,12 @@
   button {
     @apply outline-none;
   }
+
+  ul {
+    @apply list-disc ml-7;
+  }
+
+  li {
+    @apply mt-2;
+  }
 }

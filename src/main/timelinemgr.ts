@@ -27,10 +27,10 @@ export class TimelineManager {
       const validationResult = MSG_VALIDATOR(data.msg);
       if (validationResult.success) {
         this.timeline[i] = data;
-        this.sendTimelineToRenderer();
       } else {
-        console.error("timelineEditEntry error"); // TODO
+        this.alertValidationErrors(validationResult.errors);
       }
+      this.sendTimelineToRenderer();
     });
 
     ipcMain.handle("timelineAddEntry", (_, message: SimToCmMessage) => {
@@ -41,10 +41,10 @@ export class TimelineManager {
           msg: message,
         };
         this.timeline.push(entry);
-        this.sendTimelineToRenderer();
       } else {
-        console.error("timelineAddEntry error"); // TODO
+        this.alertValidationErrors(validationResult.errors);
       }
+      this.sendTimelineToRenderer();
     });
 
     ipcMain.handle("timelineDeleteEntry", (_, idx: number) => {
@@ -59,6 +59,17 @@ export class TimelineManager {
 
   private sendTimelineToRenderer() {
     this.webContents.send("timelineUpdate", this.timeline);
+  }
+
+  private alertValidationErrors(errors: Array<typia.IValidation.IError>) {
+    const errorStrs = errors.map((e) => {
+      return `<li><b>${e.path}</b>:<br>expected: <code>${e.expected}</code><br>got: <code>${e.value}</code></li>`;
+    });
+    this.alert(`Invalid entry: <ul>${errorStrs.join(", ")}</ul>`);
+  }
+
+  private alert(message: string) {
+    this.webContents.send("alert", message);
   }
 }
 
