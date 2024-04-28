@@ -63,20 +63,14 @@ const ResetButton: Component = () => {
   );
 };
 
-const FormattedTime: Component = () => {
-  return (
-    <span class="align-[.375rem] mr-3">
-      {Math.floor(STATE.elapsed.get() / 1000 + Number.EPSILON)}s
-    </span>
-  );
-};
-
 const PauseButton: Component = () => {
   const Pause: Component = () => {
     return (
       <button
         class="mr-3 text-zinc-600 hover:text-zinc-500"
-        onclick={window.timelineApi.pause}
+        onclick={() => {
+          if (STATE.wsConnected.get()) window.timelineApi.pause();
+        }}
         title="Pause timeline"
       >
         <IconPlayerPause />
@@ -88,7 +82,9 @@ const PauseButton: Component = () => {
     return (
       <button
         class="mr-3 text-zinc-600 hover:text-zinc-500"
-        onclick={window.timelineApi.resume}
+        onclick={() => {
+          if (STATE.wsConnected.get()) window.timelineApi.resume();
+        }}
         title="Resume timeline"
       >
         <IconPlayerPlay />
@@ -100,6 +96,14 @@ const PauseButton: Component = () => {
     <Show when={STATE.paused.get()} fallback={<Pause />}>
       <Resume />
     </Show>
+  );
+};
+
+const FormattedTime: Component = () => {
+  return (
+    <span class="align-[.375rem] mr-3">
+      {Math.floor(STATE.elapsed.get() / 1000 + Number.EPSILON)}s
+    </span>
   );
 };
 

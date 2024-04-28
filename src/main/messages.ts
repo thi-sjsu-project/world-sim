@@ -186,6 +186,7 @@ const MESSAGES: Array<Message> = [
 /* validation *************************************************************************************/
 
 export const msgValidator = typia.createValidateEquals<SimToCmMessage>();
+export const timelineEntryValidator = typia.createValidateEquals<TimelineEntry>();
 export const timelineValidator = typia.createValidateEquals<Array<TimelineEntry>>();
 
 // prettier-ignore

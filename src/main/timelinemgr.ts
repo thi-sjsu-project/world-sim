@@ -1,6 +1,11 @@
 import { WebContents, dialog, ipcMain } from "electron";
 import { SimToCmMessage } from "../../submodules/message-schemas/schema-types";
-import { DEFAULT_TIMELINE, msgValidator, timelineValidator } from "./messages";
+import {
+  DEFAULT_TIMELINE,
+  msgValidator,
+  timelineEntryValidator,
+  timelineValidator,
+} from "./messages";
 import { readFileSync, writeFileSync } from "fs";
 import { delayMs } from "./util";
 import typia from "typia";
@@ -22,39 +27,10 @@ export class TimelineManager {
     this.timeline = structuredClone(DEFAULT_TIMELINE);
     this.allowConnections = true;
 
-    ipcMain.handle("timelineUpdateRequest", () => {
-      this.sendTimelineToRenderer();
-    });
-
-    ipcMain.handle("timelineEditEntry", (_, i: number, data: TimelineEntry) => {
-      const validationResult = msgValidator(data.msg);
-      if (validationResult.success) {
-        this.timeline[i] = data;
-      } else {
-        this.alertValidationErrors(validationResult.errors);
-      }
-      this.sendTimelineToRenderer();
-    });
-
-    ipcMain.handle("timelineAddEntry", (_, message: SimToCmMessage) => {
-      const validationResult = msgValidator(message);
-      if (validationResult.success) {
-        const entry: TimelineEntry = {
-          delay: this.timeline[this.timeline.length - 1].delay + 5000,
-          msg: message,
-        };
-        this.timeline.push(entry);
-      } else {
-        this.alertValidationErrors(validationResult.errors);
-      }
-      this.sendTimelineToRenderer();
-    });
-
-    ipcMain.handle("timelineDeleteEntry", (_, idx: number) => {
-      this.timeline.splice(idx, 1);
-      this.sendTimelineToRenderer();
-    });
-
+    ipcMain.handle("timelineUpdateRequest", (_) => this.sendTimelineToRenderer());
+    ipcMain.handle("timelineEditEntry", (_, i: number, d: TimelineEntry) => this.editEntry(i, d));
+    ipcMain.handle("timelineAddEntry", (_, message: SimToCmMessage) => this.addEntry(message));
+    ipcMain.handle("timelineDeleteEntry", (_, idx: number) => this.deleteEntry(idx));
     ipcMain.handle("timelineReadFile", (_) => this.readFromFile());
     ipcMain.handle("timelineSaveFile", (_) => this.saveToFile());
   }
@@ -65,6 +41,35 @@ export class TimelineManager {
 
   isConnectionAllowed() {
     return this.allowConnections;
+  }
+
+  private addEntry(message: SimToCmMessage) {
+    const validationResult = msgValidator(message);
+    if (validationResult.success) {
+      const entry: TimelineEntry = {
+        delay: this.timeline[this.timeline.length - 1].delay + 5000,
+        msg: message,
+      };
+      this.timeline.push(entry);
+    } else {
+      this.alertValidationErrors(validationResult.errors);
+    }
+    this.sendTimelineToRenderer();
+  }
+
+  private editEntry(i: number, data: TimelineEntry) {
+    const validationResult = timelineEntryValidator(data);
+    if (validationResult.success) {
+      this.timeline[i] = data;
+    } else {
+      this.alertValidationErrors(validationResult.errors);
+    }
+    this.sendTimelineToRenderer();
+  }
+
+  private deleteEntry(idx: number) {
+    this.timeline.splice(idx, 1);
+    this.sendTimelineToRenderer();
   }
 
   private readFromFile() {
@@ -139,21 +144,9 @@ export class TimelinePlayer {
     this.paused = false;
     this.shouldCancel = false;
 
-    ipcMain.handle("timelinePause", () => {
-      this.paused = true;
-      this.sendPauseStatusToRenderer();
-    });
-
-    ipcMain.handle("timelineResume", () => {
-      this.paused = false;
-      this.sendPauseStatusToRenderer();
-    });
-
-    ipcMain.handle("timelineReset", () => {
-      this.index = 0;
-      this.elapsedMs = 0;
-      this.sendElapsedTimeToRenderer();
-    });
+    ipcMain.handle("timelinePause", (_) => this.setPaused(true));
+    ipcMain.handle("timelineResume", (_) => this.setPaused(false));
+    ipcMain.handle("timelineReset", (_) => this.reset());
 
     this.sendElapsedTimeToRenderer();
     this.sendPauseStatusToRenderer();
@@ -202,6 +195,17 @@ export class TimelinePlayer {
 
   get currentIndex(): number {
     return this.index;
+  }
+
+  private setPaused(paused: boolean) {
+    this.paused = paused;
+    this.sendPauseStatusToRenderer();
+  }
+
+  private reset() {
+    this.index = 0;
+    this.elapsedMs = 0;
+    this.sendElapsedTimeToRenderer();
   }
 
   private sendElapsedTimeToRenderer() {
