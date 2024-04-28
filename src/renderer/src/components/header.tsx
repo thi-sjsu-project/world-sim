@@ -1,72 +1,48 @@
-import { Accessor, Component, Setter, Show, createMemo } from "solid-js";
+import { Component, Show, createMemo } from "solid-js";
 import {
-  IconPlugConnected,
-  IconPlugConnectedX,
-  IconPower,
-  IconZoomCode,
+  IconMessageCirclePlus,
   IconPlayerPause,
   IconPlayerPlay,
-  IconMessageCirclePlus
+  IconPlugConnected,
+  IconPlugConnectedX,
+  IconRestore,
+  IconZoomCode,
 } from "@tabler/icons-solidjs";
 import { STATE } from "../app";
-import { AcaDefect, AcaFuelLow, AcaHeadingToBase, Message, MissileToOwnshipDetected, RequestApprovalToAttack, SimToCmMessage } from "../../../../submodules/message-schemas/schema-types";
-import { message } from "typia/lib/protobuf";
+import { SimToCmMessage } from "../../../../submodules/message-schemas/schema-types";
 
 const Header: Component = () => {
   const formattedTime = createMemo(() =>
     Math.floor(STATE.elapsed.get() / 1000 + Number.EPSILON)
   );
 
-
-const handleResetClick = () => {
-  window.timelineApi.reset();
-}
-
-const handlePauseClick = () => {
-  window.timelineApi.pause();
-  
-}
-
-const handleResumeClick = () => {
-  window.timelineApi.resume();
-
-}
-
-const handleCreateClick = () => {
-  console.log("create");
-  
-
-  const message: SimToCmMessage = {
-     message:  {
-      id: "ABB27046-14A8-449C-960C-79BE303E71D4",
-      priority: 2,
-      kind: "RequestApprovalToAttack",
-      data: {
-        target: {
-          location: { lat: 48.600045, lng: 11.607559 },
-          threatLevel: 0.2,
-          type: "RS-12",
+  const handleCreateClick = () => {
+    const message: SimToCmMessage = {
+      message: {
+        id: "ABB27046-14A8-449C-960C-79BE303E71D4",
+        priority: 2,
+        kind: "RequestApprovalToAttack",
+        data: {
+          target: {
+            location: { lat: 48.600045, lng: 11.607559 },
+            threatLevel: 0.2,
+            type: "RS-12",
+          },
+          collateralDamage: "none",
+          detectedByAca: 4,
+          attackWeapon: {
+            type: "ewSuppression",
+            load: 0.6,
+          },
+          choiceWeight: 0.5,
         },
-        collateralDamage: "none",
-        detectedByAca: 4,
-        attackWeapon: {
-          type: "ewSuppression",
-          load: 0.6,
-        },
-        choiceWeight: 0.5,
       },
-    },
-    
-    stressLevel: 0.5,
-    }
-    window.timelineApi.create(message);
 
+      stressLevel: 0.5,
+    };
+    window.timelineApi.addEntry(message);
   };
 
-
-
-
-  
   return (
     <div class="pb-2 border-b border-b-zinc-700">
       <Show
@@ -90,16 +66,16 @@ const handleCreateClick = () => {
 
       <button
         class="mr-3 text-zinc-600 hover:text-zinc-500"
-        onclick={ handleResetClick}
+        onclick={window.timelineApi.reset}
         title="Restart timeline"
       >
-        <IconPower />
+        <IconRestore />
       </button>
       <span class="align-[.375rem] mr-3">{formattedTime()}s</span>
 
       <button
         class="mr-3 text-zinc-600 hover:text-zinc-500"
-        onclick={ handlePauseClick}
+        onclick={window.timelineApi.pause}
         title="Pause timeline"
       >
         <IconPlayerPause />
@@ -107,7 +83,7 @@ const handleCreateClick = () => {
 
       <button
         class="mr-3 text-zinc-600 hover:text-zinc-500"
-        onclick={ handleResumeClick}
+        onclick={window.timelineApi.resume}
         title="Resume timeline"
       >
         <IconPlayerPlay />
@@ -115,7 +91,7 @@ const handleCreateClick = () => {
 
       <button
         class="mr-3 text-zinc-600 hover:text-zinc-500"
-        onclick={ handleCreateClick}
+        onclick={handleCreateClick}
         title="Create Message"
       >
         <IconMessageCirclePlus />

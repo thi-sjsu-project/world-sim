@@ -1,6 +1,6 @@
 import { WebContents, ipcMain } from "electron";
 import { SimToCmMessage } from "../../submodules/message-schemas/schema-types";
-import { DEFAULT_TIMELINE } from "./messages";
+import { DEFAULT_TIMELINE, MSG_VALIDATOR } from "./messages";
 import { delayMs } from "./util";
 import typia from "typia";
 
@@ -23,48 +23,40 @@ export class TimelineManager {
       this.sendTimelineToRenderer();
     });
 
-    ipcMain.handle(
-      "timelineEditEntry",
-      (_event, idx: number, data: TimelineEntry) => {
-        this.timeline[idx] = data;
+    ipcMain.handle("timelineEditEntry", (_, i: number, data: TimelineEntry) => {
+      const validationResult = MSG_VALIDATOR(data.msg);
+      if (validationResult.success) {
+        this.timeline[i] = data;
         this.sendTimelineToRenderer();
+      } else {
+        console.error("timelineEditEntry error"); // TODO
       }
-    );
+    });
 
-    ipcMain.handle("create", (_, message: SimToCmMessage) => {
-  
-      const validator = typia.createValidateEquals<SimToCmMessage>();
-      const validationResult = validator(message);
-    
-    
-      // console.log(message);
-    
+    ipcMain.handle("timelineAddEntry", (_, message: SimToCmMessage) => {
+      const validationResult = MSG_VALIDATOR(message);
       if (validationResult.success) {
         const entry: TimelineEntry = {
           delay: this.timeline[this.timeline.length - 1].delay + 5000,
           msg: message,
         };
         this.timeline.push(entry);
-      
         this.sendTimelineToRenderer();
-        return true;
-  
+      } else {
+        console.error("timelineAddEntry error"); // TODO
       }
-    
     });
 
-
-    ipcMain.handle("deleteEntry", (_, idx: number) => {
+    ipcMain.handle("timelineDeleteEntry", (_, idx: number) => {
       this.timeline.splice(idx, 1);
       this.sendTimelineToRenderer();
     });
   }
 
-  
-
   start(): TimelinePlayer {
     return new TimelinePlayer(this.webContents, this.timeline);
   }
+
   private sendTimelineToRenderer() {
     this.webContents.send("timelineUpdate", this.timeline);
   }
@@ -86,29 +78,31 @@ export class TimelinePlayer {
     this.paused = false;
     this.shouldCancel = false;
 
-    ipcMain.handle("pause", () => {
+    ipcMain.handle("timelinePause", () => {
       this.paused = true;
     });
 
-    ipcMain.handle("resume", () => {
+    ipcMain.handle("timelineResume", () => {
       this.paused = false;
+    });
+
+    ipcMain.handle("timelineReset", () => {
+      this.index = 0;
+      this.elapsedMs = 0;
+      this.sendElapsedTimeToRenderer();
     });
   }
 
   stop() {
     this.shouldCancel = true;
 
-
-    ipcMain.removeHandler("pause");
-    ipcMain.removeHandler("resume");
+    ipcMain.removeHandler("timelinePause");
+    ipcMain.removeHandler("timelineResume");
   }
 
   async step() {
-    const lastDelay = this.index == 0 ? 0 : this.timeline[this.index - 1].delay;
-    const entry = this.timeline[this.index];
-    let delay = entry.delay - lastDelay;
-
-    while (delay > 0) {
+    let delay: number;
+    while ((delay = this.calcDelayTime()) > 0 || this.paused) {
       while (this.paused) {
         if (this.shouldCancel) {
           return null;
@@ -119,7 +113,6 @@ export class TimelinePlayer {
       const iterDelay = Math.min(delay, DELAY_STEP_MS);
       await delayMs(iterDelay);
       this.elapsedMs += iterDelay;
-      delay -= DELAY_STEP_MS;
 
       this.sendElapsedTimeToRenderer();
       if (this.shouldCancel) {
@@ -127,8 +120,13 @@ export class TimelinePlayer {
       }
     }
 
+    const msg = this.timeline[this.index].msg;
     this.index += 1;
-    return entry.msg;
+    return msg;
+  }
+
+  calcDelayTime(): number {
+    return Math.max(0, this.timeline[this.index].delay - this.elapsedMs);
   }
 
   hasRemainingEntries(): boolean {
@@ -137,11 +135,6 @@ export class TimelinePlayer {
 
   get currentIndex(): number {
     return this.index;
-  }
-
-  private sendTimelineToRenderer() {
-    console.log(this.timeline);
-    this.webContents.send("timelineUpdate", this.timeline);
   }
 
   private sendElapsedTimeToRenderer() {

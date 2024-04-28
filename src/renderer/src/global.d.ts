@@ -1,4 +1,4 @@
-import {SimToCmMessage } from "@messages-schemas/schema-types";
+import { SimToCmMessage } from "@messages-schemas/schema-types";
 import { TimelineEntry } from "src/main/timelinemgr";
 
 export {};
@@ -12,9 +12,9 @@ type TimelineApi = {
   editEntry: (idx: number, data: TimelineEntry) => void;
   reset: () => void;
   pause: () => () => void;
-  resume:() => void;
-  create: (message: SimToCmMessage) => void;
-  deleteEntry: (idx : number) => void;
+  resume: () => void;
+  addEntry: (message: SimToCmMessage) => void;
+  deleteEntry: (idx: number) => void;
 };
 
 declare global {

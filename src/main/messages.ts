@@ -3,7 +3,7 @@ import { AcaDefect, AcaFuelLow, AcaHeadingToBase, Message, MissileToOwnshipDetec
 import typia from "typia";
 import { logError, logInfo } from "./util";
 import { TimelineEntry } from "./timelinemgr";
-import {ipcMain} from "electron"; 
+import { ipcMain } from "electron";
 
 /* sample messages ********************************************************************************/
 
@@ -182,18 +182,17 @@ const MESSAGES: Array<Message> = [
       choiceWeight: 0.4,
     },
   } satisfies RequestApprovalToAttack,
-] as const;
-
+];
 
 /* validation *************************************************************************************/
 
-const validator = typia.createValidateEquals<SimToCmMessage>();
+export const MSG_VALIDATOR = typia.createValidateEquals<SimToCmMessage>();
 
 function validateTimelineEntry(
   entry: TimelineEntry,
   idx: number
 ): entry is TimelineEntry {
-  const validationResult = validator(entry.msg);
+  const validationResult = MSG_VALIDATOR(entry.msg);
 
   if (entry.delay < 0 || validationResult.success) {
     return true;

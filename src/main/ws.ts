@@ -38,13 +38,8 @@ export function startWebSocketServer(webContents: WebContents) {
       setActive(false);
       player.stop();
       logInfo("(ws) connection closed");
-      ipcMain.removeHandler("reset");
       player.stop();
     }
-
-    ipcMain.handle("reset", () => {
-      ws.close();
-    });
 
     ws.on("close", closeHandler);
 

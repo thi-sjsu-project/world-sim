@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
-import {SimToCmMessage } from "@messages-schemas/schema-types";
+import { SimToCmMessage } from "@messages-schemas/schema-types";
 import { TimelineEntry } from "src/main/timelinemgr";
 
 function onUpdate(callback: (timeline: Array<TimelineEntry>) => void) {
@@ -26,23 +26,24 @@ function editEntry(idx: number, data: TimelineEntry) {
   ipcRenderer.invoke("timelineEditEntry", idx, data);
 }
 
-function reset(){
-  ipcRenderer.invoke("reset");
+function reset() {
+  ipcRenderer.invoke("timelineReset");
 }
 
-function pause(){
-  ipcRenderer.invoke("pause");
+function pause() {
+  ipcRenderer.invoke("timelinePause");
 }
 
-function resume(){
-  ipcRenderer.invoke("resume");
-}
-function create(message: SimToCmMessage){
-  ipcRenderer.invoke("create", message);
+function resume() {
+  ipcRenderer.invoke("timelineResume");
 }
 
-function deleteEntry(idx : number){
-  ipcRenderer.invoke("deleteEntry", idx);
+function addEntry(message: SimToCmMessage) {
+  ipcRenderer.invoke("timelineAddEntry", message);
+}
+
+function deleteEntry(idx: number) {
+  ipcRenderer.invoke("timelineDeleteEntry", idx);
 }
 
 contextBridge.exposeInMainWorld("timelineApi", {
@@ -55,7 +56,7 @@ contextBridge.exposeInMainWorld("timelineApi", {
   reset,
   pause,
   resume,
-  create,
+  addEntry,
   deleteEntry,
 });
 
