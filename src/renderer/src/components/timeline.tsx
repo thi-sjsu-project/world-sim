@@ -1,7 +1,7 @@
-import { Component, For, JSX, createMemo, onMount } from "solid-js";
+import { Component, For, createMemo, onMount } from "solid-js";
 import { TimelineEntry } from "../../../main/timelinemgr";
 import { STATE } from "../app";
-import { IconEdit, IconPencil, IconTrash } from "@tabler/icons-solidjs";
+import { IconPencil, IconTrash } from "@tabler/icons-solidjs";
 
 const Timeline: Component = () => {
   onMount(() => {

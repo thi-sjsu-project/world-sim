@@ -1,30 +1,33 @@
-import { WebContents, ipcMain } from "electron";
+import { WebContents, dialog, ipcMain } from "electron";
 import { SimToCmMessage } from "../../submodules/message-schemas/schema-types";
-import { DEFAULT_TIMELINE, MSG_VALIDATOR } from "./messages";
+import { DEFAULT_TIMELINE, msgValidator, timelineValidator } from "./messages";
+import { readFileSync, writeFileSync } from "fs";
 import { delayMs } from "./util";
 import typia from "typia";
 
 const DELAY_STEP_MS = 100;
 
 export type TimelineEntry = {
-  delay: number;
+  delay: number & typia.tags.Type<"uint64">;
   msg: SimToCmMessage;
 };
 
 export class TimelineManager {
   private webContents: WebContents;
   private timeline: Array<TimelineEntry>;
+  private allowConnections: boolean;
 
   constructor(webContents: WebContents) {
     this.webContents = webContents;
     this.timeline = structuredClone(DEFAULT_TIMELINE);
+    this.allowConnections = true;
 
     ipcMain.handle("timelineUpdateRequest", () => {
       this.sendTimelineToRenderer();
     });
 
     ipcMain.handle("timelineEditEntry", (_, i: number, data: TimelineEntry) => {
-      const validationResult = MSG_VALIDATOR(data.msg);
+      const validationResult = msgValidator(data.msg);
       if (validationResult.success) {
         this.timeline[i] = data;
       } else {
@@ -34,7 +37,7 @@ export class TimelineManager {
     });
 
     ipcMain.handle("timelineAddEntry", (_, message: SimToCmMessage) => {
-      const validationResult = MSG_VALIDATOR(message);
+      const validationResult = msgValidator(message);
       if (validationResult.success) {
         const entry: TimelineEntry = {
           delay: this.timeline[this.timeline.length - 1].delay + 5000,
@@ -51,10 +54,57 @@ export class TimelineManager {
       this.timeline.splice(idx, 1);
       this.sendTimelineToRenderer();
     });
+
+    ipcMain.handle("timelineReadFile", (_) => this.readFromFile());
+    ipcMain.handle("timelineSaveFile", (_) => this.saveToFile());
   }
 
   start(): TimelinePlayer {
     return new TimelinePlayer(this.webContents, this.timeline);
+  }
+
+  isConnectionAllowed() {
+    return this.allowConnections;
+  }
+
+  private readFromFile() {
+    this.allowConnections = false;
+    try {
+      const file = dialog.showOpenDialogSync({
+        properties: ["openFile"],
+        filters: [{ name: "JSON Files", extensions: ["json"] }],
+      });
+      if (!file) return;
+      const json = readFileSync(file[0], "utf-8");
+      const parsed = JSON.parse(json);
+      const validationResult = timelineValidator(parsed);
+      if (validationResult.success) {
+        this.timeline = validationResult.data;
+        this.sendTimelineToRenderer();
+      } else {
+        return this.alertValidationErrors(validationResult.errors);
+      }
+    } catch (e) {
+      this.alert(`Error while reading from JSON file:<br><br>${e}`);
+    } finally {
+      this.allowConnections = true;
+    }
+  }
+
+  private saveToFile() {
+    try {
+      const file = dialog.showSaveDialogSync({
+        defaultPath: "timeline.json",
+        filters: [{ name: "JSON Files", extensions: ["json"] }],
+      });
+      if (!file) return;
+      const json = JSON.stringify(this.timeline);
+      writeFileSync(file, json);
+    } catch (e) {
+      this.alert(`Error while writing to JSON file:<br><br>${e}`);
+    } finally {
+      this.allowConnections = true;
+    }
   }
 
   private sendTimelineToRenderer() {
@@ -65,7 +115,7 @@ export class TimelineManager {
     const errorStrs = errors.map((e) => {
       return `<li><b>${e.path}</b>:<br>expected: <code>${e.expected}</code><br>got: <code>${e.value}</code></li>`;
     });
-    this.alert(`Invalid entry: <ul>${errorStrs.join(", ")}</ul>`);
+    this.alert(`Data constraint violation: <ul>${errorStrs.join("")}</ul>`);
   }
 
   private alert(message: string) {

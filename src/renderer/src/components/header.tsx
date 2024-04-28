@@ -1,6 +1,6 @@
 // prettier-ignore
 import { IconDeviceFloppy, IconFolder, IconMessageCirclePlus, IconPlayerPause, IconPlayerPlay, IconPlugConnected, IconPlugConnectedX, IconRestore, IconZoomCode } from "@tabler/icons-solidjs";
-import { Component, Show, createMemo } from "solid-js";
+import { Component, Show } from "solid-js";
 import { SimToCmMessage } from "../../../../submodules/message-schemas/schema-types";
 import { v4 as uuid } from "uuid";
 import { STATE } from "../app";
@@ -107,7 +107,7 @@ const ReadFileButton: Component = () => {
   return (
     <button
       class="mr-3 text-zinc-600 hover:text-zinc-500 pl-3 border-l border-l-zinc-700 disabled:cursor-not-allowed disabled:text-zinc-800 disabled:hover:text-zinc-800"
-      onclick={undefined}
+      onclick={window.timelineApi.readFile}
       title="Read timeline from JSON file"
       disabled={STATE.wsConnected.get()}
     >
@@ -120,7 +120,7 @@ const SaveFileButton: Component = () => {
   return (
     <button
       class="mr-3 text-zinc-600 hover:text-zinc-500"
-      onclick={undefined}
+      onclick={window.timelineApi.saveFile}
       title="Save timeline to JSON file"
     >
       <IconDeviceFloppy />

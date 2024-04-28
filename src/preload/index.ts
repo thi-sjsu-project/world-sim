@@ -50,6 +50,14 @@ function deleteEntry(idx: number) {
   ipcRenderer.invoke("timelineDeleteEntry", idx);
 }
 
+function readFile() {
+  ipcRenderer.invoke("timelineReadFile");
+}
+
+function saveFile() {
+  ipcRenderer.invoke("timelineSaveFile");
+}
+
 contextBridge.exposeInMainWorld("timelineApi", {
   onElapsed,
   onUpdate,
@@ -63,6 +71,8 @@ contextBridge.exposeInMainWorld("timelineApi", {
   resume,
   addEntry,
   deleteEntry,
+  readFile,
+  saveFile,
 });
 
 contextBridge.exposeInMainWorld("openDevTools", () => {

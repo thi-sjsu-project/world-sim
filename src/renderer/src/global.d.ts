@@ -16,6 +16,8 @@ type TimelineApi = {
   resume: () => void;
   addEntry: (message: SimToCmMessage) => void;
   deleteEntry: (idx: number) => void;
+  readFile: () => void;
+  saveFile: () => void;
 };
 
 declare global {

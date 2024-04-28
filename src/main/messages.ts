@@ -1,9 +1,8 @@
 // prettier-ignore
 import { AcaDefect, AcaFuelLow, AcaHeadingToBase, Message, MissileToOwnshipDetected, RequestApprovalToAttack, SimToCmMessage } from "../../submodules/message-schemas/schema-types";
 import typia from "typia";
-import { logError, logInfo } from "./util";
+import { logError } from "./util";
 import { TimelineEntry } from "./timelinemgr";
-import { ipcMain } from "electron";
 
 /* sample messages ********************************************************************************/
 
@@ -186,22 +185,8 @@ const MESSAGES: Array<Message> = [
 
 /* validation *************************************************************************************/
 
-export const MSG_VALIDATOR = typia.createValidateEquals<SimToCmMessage>();
-
-function validateTimelineEntry(entry: TimelineEntry, idx: number): entry is TimelineEntry {
-  const validationResult = MSG_VALIDATOR(entry.msg);
-
-  if (entry.delay < 0 || validationResult.success) {
-    return true;
-  } else {
-    logError(`entry ${idx} invalid:`);
-    for (const error of validationResult.errors) {
-      logError(` - ${error.path}, expected ${error.expected}, found value ${error.value}`);
-    }
-  }
-
-  return false;
-}
+export const msgValidator = typia.createValidateEquals<SimToCmMessage>();
+export const timelineValidator = typia.createValidateEquals<Array<TimelineEntry>>();
 
 // prettier-ignore
 const UNVALIDATED_TIMELINE: Array<TimelineEntry> = [
@@ -217,4 +202,14 @@ const UNVALIDATED_TIMELINE: Array<TimelineEntry> = [
   { delay: 60_000, msg: { message: MESSAGES[9], stressLevel: 0.6 } },
 ];
 
-export const DEFAULT_TIMELINE = UNVALIDATED_TIMELINE.filter(validateTimelineEntry);
+export const DEFAULT_TIMELINE = (() => {
+  const validationResult = timelineValidator(UNVALIDATED_TIMELINE);
+  if (!validationResult.success) {
+    logError(`default timeline invalid:`);
+    for (const error of validationResult.errors) {
+      logError(` - ${error.path}, expected ${error.expected}, found value ${error.value}`);
+    }
+    throw new Error("default timeline invalid");
+  }
+  return UNVALIDATED_TIMELINE;
+})();
