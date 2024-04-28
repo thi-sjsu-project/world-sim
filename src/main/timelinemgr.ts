@@ -2,6 +2,7 @@ import { WebContents, ipcMain } from "electron";
 import { SimToCmMessage } from "../../submodules/message-schemas/schema-types";
 import { DEFAULT_TIMELINE } from "./messages";
 import { delayMs } from "./util";
+import typia from "typia";
 
 const DELAY_STEP_MS = 100;
 
@@ -29,12 +30,41 @@ export class TimelineManager {
         this.sendTimelineToRenderer();
       }
     );
+
+    ipcMain.handle("create", (_, message: SimToCmMessage) => {
+  
+      const validator = typia.createValidateEquals<SimToCmMessage>();
+      const validationResult = validator(message);
+    
+    
+      // console.log(message);
+    
+      if (validationResult.success) {
+        const entry: TimelineEntry = {
+          delay: this.timeline[this.timeline.length - 1].delay + 5000,
+          msg: message,
+        };
+        this.timeline.push(entry);
+      
+        this.sendTimelineToRenderer();
+        return true;
+  
+      }
+    
+    });
+
+
+    ipcMain.handle("deleteEntry", (_, idx: number) => {
+      this.timeline.splice(idx, 1);
+      this.sendTimelineToRenderer();
+    });
   }
+
+  
 
   start(): TimelinePlayer {
     return new TimelinePlayer(this.webContents, this.timeline);
   }
-
   private sendTimelineToRenderer() {
     this.webContents.send("timelineUpdate", this.timeline);
   }
@@ -67,6 +97,7 @@ export class TimelinePlayer {
 
   stop() {
     this.shouldCancel = true;
+
 
     ipcMain.removeHandler("pause");
     ipcMain.removeHandler("resume");
@@ -106,6 +137,11 @@ export class TimelinePlayer {
 
   get currentIndex(): number {
     return this.index;
+  }
+
+  private sendTimelineToRenderer() {
+    console.log(this.timeline);
+    this.webContents.send("timelineUpdate", this.timeline);
   }
 
   private sendElapsedTimeToRenderer() {

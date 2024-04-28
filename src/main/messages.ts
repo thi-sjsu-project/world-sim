@@ -1,8 +1,9 @@
 // prettier-ignore
 import { AcaDefect, AcaFuelLow, AcaHeadingToBase, Message, MissileToOwnshipDetected, RequestApprovalToAttack, SimToCmMessage } from "../../submodules/message-schemas/schema-types";
 import typia from "typia";
-import { logError } from "./util";
+import { logError, logInfo } from "./util";
 import { TimelineEntry } from "./timelinemgr";
+import {ipcMain} from "electron"; 
 
 /* sample messages ********************************************************************************/
 
@@ -181,7 +182,8 @@ const MESSAGES: Array<Message> = [
       choiceWeight: 0.4,
     },
   } satisfies RequestApprovalToAttack,
-];
+] as const;
+
 
 /* validation *************************************************************************************/
 
