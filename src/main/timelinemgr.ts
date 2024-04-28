@@ -91,10 +91,12 @@ export class TimelinePlayer {
 
     ipcMain.handle("timelinePause", () => {
       this.paused = true;
+      this.sendPauseStatusToRenderer();
     });
 
     ipcMain.handle("timelineResume", () => {
       this.paused = false;
+      this.sendPauseStatusToRenderer();
     });
 
     ipcMain.handle("timelineReset", () => {
@@ -102,6 +104,9 @@ export class TimelinePlayer {
       this.elapsedMs = 0;
       this.sendElapsedTimeToRenderer();
     });
+
+    this.sendElapsedTimeToRenderer();
+    this.sendPauseStatusToRenderer();
   }
 
   stop() {
@@ -109,6 +114,7 @@ export class TimelinePlayer {
 
     ipcMain.removeHandler("timelinePause");
     ipcMain.removeHandler("timelineResume");
+    ipcMain.removeHandler("timelineReset");
   }
 
   async step() {
@@ -150,5 +156,9 @@ export class TimelinePlayer {
 
   private sendElapsedTimeToRenderer() {
     this.webContents.send("timelineElapsed", this.elapsedMs);
+  }
+
+  private sendPauseStatusToRenderer() {
+    this.webContents.send("timelinePause", this.paused);
   }
 }

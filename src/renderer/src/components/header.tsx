@@ -12,10 +12,103 @@ import { STATE } from "../app";
 import { SimToCmMessage } from "../../../../submodules/message-schemas/schema-types";
 
 const Header: Component = () => {
-  const formattedTime = createMemo(() =>
-    Math.floor(STATE.elapsed.get() / 1000 + Number.EPSILON)
+  return (
+    <div class="pb-2 border-b border-b-zinc-700">
+      <WsConnectionIndicator />
+      <ResetButton />
+      <PauseButton />
+      <FormattedTime />
+      <AddMessageButton />
+      <DevToolsButton />
+    </div>
   );
+};
 
+const WsConnectionIndicator: Component = () => {
+  const Disconnected: Component = () => {
+    return (
+      <span
+        title="WebSocket not connected"
+        class="inline-block pr-3 mr-3 border-r border-r-zinc-700"
+      >
+        <IconPlugConnectedX class="text-red-400" />
+      </span>
+    );
+  };
+
+  const Connected: Component = () => {
+    return (
+      <span
+        title="WebSocket connected"
+        class="inline-block pr-3 mr-3 border-r border-r-zinc-700"
+      >
+        <IconPlugConnected class="text-green-400" />
+      </span>
+    );
+  };
+
+  return (
+    <Show when={STATE.wsConnected.get()} fallback={<Disconnected />}>
+      <Connected />
+    </Show>
+  );
+};
+
+const ResetButton: Component = () => {
+  return (
+    <button
+      class="mr-3 text-zinc-600 hover:text-zinc-500"
+      onclick={() => {
+        if (STATE.wsConnected.get()) window.timelineApi.reset();
+      }}
+      title="Restart timeline"
+    >
+      <IconRestore />
+    </button>
+  );
+};
+
+const FormattedTime: Component = () => {
+  return (
+    <span class="align-[.375rem] mr-3">
+      {Math.floor(STATE.elapsed.get() / 1000 + Number.EPSILON)}s
+    </span>
+  );
+};
+
+const PauseButton: Component = () => {
+  const Pause: Component = () => {
+    return (
+      <button
+        class="mr-3 text-zinc-600 hover:text-zinc-500"
+        onclick={window.timelineApi.pause}
+        title="Pause timeline"
+      >
+        <IconPlayerPause />
+      </button>
+    );
+  };
+
+  const Resume: Component = () => {
+    return (
+      <button
+        class="mr-3 text-zinc-600 hover:text-zinc-500"
+        onclick={window.timelineApi.resume}
+        title="Resume timeline"
+      >
+        <IconPlayerPlay />
+      </button>
+    );
+  };
+
+  return (
+    <Show when={STATE.paused.get()} fallback={<Pause />}>
+      <Resume />
+    </Show>
+  );
+};
+
+const AddMessageButton: Component = () => {
   const handleCreateClick = () => {
     const message: SimToCmMessage = {
       message: {
@@ -44,66 +137,24 @@ const Header: Component = () => {
   };
 
   return (
-    <div class="pb-2 border-b border-b-zinc-700">
-      <Show
-        when={STATE.wsConnected.get()}
-        fallback={
-          <span
-            title="WebSocket not connected"
-            class="inline-block pr-3 mr-3 border-r border-r-zinc-700"
-          >
-            <IconPlugConnectedX class="text-red-400" />
-          </span>
-        }
-      >
-        <span
-          title="WebSocket connected"
-          class="inline-block pr-3 mr-3 border-r border-r-zinc-700"
-        >
-          <IconPlugConnected class="text-green-400" />
-        </span>
-      </Show>
+    <button
+      class="mr-3 text-zinc-600 hover:text-zinc-500 pl-3 border-l border-l-zinc-700"
+      onclick={handleCreateClick}
+      title="Create Message"
+    >
+      <IconMessageCirclePlus />
+    </button>
+  );
+};
 
-      <button
-        class="mr-3 text-zinc-600 hover:text-zinc-500"
-        onclick={window.timelineApi.reset}
-        title="Restart timeline"
-      >
-        <IconRestore />
-      </button>
-      <span class="align-[.375rem] mr-3">{formattedTime()}s</span>
-
-      <button
-        class="mr-3 text-zinc-600 hover:text-zinc-500"
-        onclick={window.timelineApi.pause}
-        title="Pause timeline"
-      >
-        <IconPlayerPause />
-      </button>
-
-      <button
-        class="mr-3 text-zinc-600 hover:text-zinc-500"
-        onclick={window.timelineApi.resume}
-        title="Resume timeline"
-      >
-        <IconPlayerPlay />
-      </button>
-
-      <button
-        class="mr-3 text-zinc-600 hover:text-zinc-500"
-        onclick={handleCreateClick}
-        title="Create Message"
-      >
-        <IconMessageCirclePlus />
-      </button>
-
-      <button
-        class="ml-3 text-zinc-600 hover:text-zinc-500 float-right"
-        onclick={() => window.openDevTools()}
-      >
-        <IconZoomCode />
-      </button>
-    </div>
+const DevToolsButton: Component = () => {
+  return (
+    <button
+      class="ml-3 text-zinc-600 hover:text-zinc-500 float-right"
+      onclick={() => window.openDevTools()}
+    >
+      <IconZoomCode />
+    </button>
   );
 };
 

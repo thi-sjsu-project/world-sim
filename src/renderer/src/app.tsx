@@ -9,6 +9,7 @@ export const STATE = {
   elapsed: Signal(0),
   timeline: Signal<Array<TimelineEntry>>([]),
   wsConnected: Signal(false),
+  paused: Signal(false),
 };
 
 window.timelineApi.onUpdate((newTimeline: Array<TimelineEntry>) => {
@@ -17,6 +18,10 @@ window.timelineApi.onUpdate((newTimeline: Array<TimelineEntry>) => {
 
 window.timelineApi.onElapsed((elapsedMs: number) => {
   STATE.elapsed.set(elapsedMs);
+});
+
+window.timelineApi.onPause((paused: boolean) => {
+  STATE.paused.set(paused);
 });
 
 window.timelineApi.onWsUpdate((wsConnected: boolean) => {

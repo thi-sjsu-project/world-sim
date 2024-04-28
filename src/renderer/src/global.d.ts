@@ -6,6 +6,7 @@ export {};
 type TimelineApi = {
   onUpdate: (callback: (timeline: Array<TimelineEntry>) => void) => void;
   onElapsed: (callback: (elapsedMs: number) => void) => void;
+  onPause: (callback: (paused: boolean) => void) => void;
   onWsUpdate: (callback: (wsConnected: boolean) => void) => void;
   requestUpdate: () => void;
   requestWsUpdate: () => void;

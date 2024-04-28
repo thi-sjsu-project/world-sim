@@ -7,7 +7,11 @@ function onUpdate(callback: (timeline: Array<TimelineEntry>) => void) {
 }
 
 function onElapsed(callback: (elapsedMs: number) => void) {
-  ipcRenderer.on("timelineElapsed", (_, value) => callback(value));
+  ipcRenderer.on("timelineElapsed", (_, elapsed) => callback(elapsed));
+}
+
+function onPause(callback: (paused: boolean) => void) {
+  ipcRenderer.on("timelinePause", (_, paused) => callback(paused));
 }
 
 function onWsUpdate(callback: (wsConnected: boolean) => void) {
@@ -49,6 +53,7 @@ function deleteEntry(idx: number) {
 contextBridge.exposeInMainWorld("timelineApi", {
   onElapsed,
   onUpdate,
+  onPause,
   onWsUpdate,
   requestUpdate,
   requestWsUpdate,
