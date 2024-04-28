@@ -188,10 +188,7 @@ const MESSAGES: Array<Message> = [
 
 export const MSG_VALIDATOR = typia.createValidateEquals<SimToCmMessage>();
 
-function validateTimelineEntry(
-  entry: TimelineEntry,
-  idx: number
-): entry is TimelineEntry {
+function validateTimelineEntry(entry: TimelineEntry, idx: number): entry is TimelineEntry {
   const validationResult = MSG_VALIDATOR(entry.msg);
 
   if (entry.delay < 0 || validationResult.success) {
@@ -199,9 +196,7 @@ function validateTimelineEntry(
   } else {
     logError(`entry ${idx} invalid:`);
     for (const error of validationResult.errors) {
-      logError(
-        ` - ${error.path}, expected ${error.expected}, found value ${error.value}`
-      );
+      logError(` - ${error.path}, expected ${error.expected}, found value ${error.value}`);
     }
   }
 
@@ -222,6 +217,4 @@ const UNVALIDATED_TIMELINE: Array<TimelineEntry> = [
   { delay: 60_000, msg: { message: MESSAGES[9], stressLevel: 0.6 } },
 ];
 
-export const DEFAULT_TIMELINE = UNVALIDATED_TIMELINE.filter(
-  validateTimelineEntry
-);
+export const DEFAULT_TIMELINE = UNVALIDATED_TIMELINE.filter(validateTimelineEntry);

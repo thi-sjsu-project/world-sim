@@ -1,15 +1,9 @@
+// prettier-ignore
+import { IconDeviceFloppy, IconFolder, IconMessageCirclePlus, IconPlayerPause, IconPlayerPlay, IconPlugConnected, IconPlugConnectedX, IconRestore, IconZoomCode } from "@tabler/icons-solidjs";
 import { Component, Show, createMemo } from "solid-js";
-import {
-  IconMessageCirclePlus,
-  IconPlayerPause,
-  IconPlayerPlay,
-  IconPlugConnected,
-  IconPlugConnectedX,
-  IconRestore,
-  IconZoomCode,
-} from "@tabler/icons-solidjs";
-import { STATE } from "../app";
 import { SimToCmMessage } from "../../../../submodules/message-schemas/schema-types";
+import { v4 as uuid } from "uuid";
+import { STATE } from "../app";
 
 const Header: Component = () => {
   return (
@@ -18,6 +12,8 @@ const Header: Component = () => {
       <ResetButton />
       <PauseButton />
       <FormattedTime />
+      <ReadFileButton />
+      <SaveFileButton />
       <AddMessageButton />
       <DevToolsButton />
     </div>
@@ -38,10 +34,7 @@ const WsConnectionIndicator: Component = () => {
 
   const Connected: Component = () => {
     return (
-      <span
-        title="WebSocket connected"
-        class="inline-block pr-3 mr-3 border-r border-r-zinc-700"
-      >
+      <span title="WebSocket connected" class="inline-block pr-3 mr-3 border-r border-r-zinc-700">
         <IconPlugConnected class="text-green-400" />
       </span>
     );
@@ -108,11 +101,42 @@ const PauseButton: Component = () => {
   );
 };
 
+const ReadFileButton: Component = () => {
+  const buttonClass = createMemo(() => {
+    let c = "mr-3 text-zinc-600 hover:text-zinc-500 pl-3 border-l border-l-zinc-700";
+    if (STATE.wsConnected.get()) c += " cursor-pointer text-zinc-700 hover:text-zinc-700";
+    return c;
+  });
+
+  return (
+    <button
+      class={buttonClass()}
+      onclick={undefined}
+      title="Read timeline from JSON file"
+      disabled={STATE.wsConnected.get()}
+    >
+      <IconFolder />
+    </button>
+  );
+};
+
+const SaveFileButton: Component = () => {
+  return (
+    <button
+      class="mr-3 text-zinc-600 hover:text-zinc-500"
+      onclick={undefined}
+      title="Save timeline to JSON file"
+    >
+      <IconDeviceFloppy />
+    </button>
+  );
+};
+
 const AddMessageButton: Component = () => {
   const handleCreateClick = () => {
     const message: SimToCmMessage = {
       message: {
-        id: "ABB27046-14A8-449C-960C-79BE303E71D4",
+        id: uuid(),
         priority: 2,
         kind: "RequestApprovalToAttack",
         data: {
@@ -138,7 +162,7 @@ const AddMessageButton: Component = () => {
 
   return (
     <button
-      class="mr-3 text-zinc-600 hover:text-zinc-500 pl-3 border-l border-l-zinc-700"
+      class="mr-3 text-zinc-600 hover:text-zinc-500"
       onclick={handleCreateClick}
       title="Create Message"
     >

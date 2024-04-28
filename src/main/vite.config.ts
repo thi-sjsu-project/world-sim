@@ -17,11 +17,7 @@ export default defineConfig({
     minify: process.env./* from mode option */ NODE_ENV === "production",
     emptyOutDir: true,
     rollupOptions: {
-      external: [
-        "electron",
-        ...builtinModules,
-        ...Object.keys(pkg.devDependencies || {}),
-      ],
+      external: ["electron", ...builtinModules, ...Object.keys(pkg.devDependencies || {})],
       plugins: [solidPlugin(), typescript()],
     },
   },

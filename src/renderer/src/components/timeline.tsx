@@ -23,8 +23,7 @@ const Entry: Component<{
   index: number;
 }> = (props) => {
   const dotClass = createMemo(() => {
-    const wasPlayed =
-      STATE.wsConnected.get() && STATE.elapsed.get() >= props.item.delay;
+    const wasPlayed = STATE.wsConnected.get() && STATE.elapsed.get() >= props.item.delay;
     const dotBackground = wasPlayed ? "bg-green-400" : "bg-zinc-600";
     return `rounded-full w-3 h-3 mr-4 ml-1 inline-block ${dotBackground} align-[1.3rem]`;
   });

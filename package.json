@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@tabler/icons-solidjs": "2.47.0",
+    "@types/uuid": "^9.0.8",
     "@types/ws": "^8.5.10",
     "autoprefixer": "^10.4.2",
     "electron": "^29.2.0",
@@ -27,6 +28,7 @@
     "ts-patch": "^3.1.2",
     "typescript": "5.4.2",
     "typia": "^6.0.1",
+    "uuid": "^9.0.1",
     "vite": "^5.2.8",
     "vite-plugin-resolve": "^2.5.1",
     "vite-plugin-solid": "^2.10.2",
