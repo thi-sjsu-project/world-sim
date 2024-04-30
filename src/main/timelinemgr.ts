@@ -33,6 +33,7 @@ export class TimelineManager {
     ipcMain.handle("timelineDeleteEntry", (_, idx: number) => this.deleteEntry(idx));
     ipcMain.handle("timelineReadFile", (_) => this.readFromFile());
     ipcMain.handle("timelineSaveFile", (_) => this.saveToFile());
+    // ipcMain.handle("addRapidEntry", (_, message: SimToCmMessage) => this.addRapidEntry(message));
   }
 
   start(): TimelinePlayer {
@@ -56,6 +57,23 @@ export class TimelineManager {
     }
     this.sendTimelineToRenderer();
   }
+
+  // private addRapidEntry(message: SimToCmMessage) {
+  //   const validationResult = msgValidator(message);
+    
+  //   if (validationResult.success) {
+  //     //add to the beginning of the timeline
+  //     //we need to make it so that it
+  //     const entry: TimelineEntry = {
+  //       delay: 0, 
+  //       msg: message,
+  //     };
+  //     this.timeline.push(entry);
+  //   } else {
+  //     this.alertValidationErrors(validationResult.errors);
+  //   }
+  //   this.sendTimelineToRenderer();
+  // }
 
   private editEntry(i: number, data: TimelineEntry) {
     const validationResult = timelineEntryValidator(data);

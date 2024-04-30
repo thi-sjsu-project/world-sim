@@ -58,6 +58,10 @@ function saveFile() {
   ipcRenderer.invoke("timelineSaveFile");
 }
 
+// function addRapidEntry(message: SimToCmMessage) {
+//   ipcRenderer.invoke("addRapidEntry", message);
+// }
+
 contextBridge.exposeInMainWorld("timelineApi", {
   onElapsed,
   onUpdate,
@@ -73,6 +77,7 @@ contextBridge.exposeInMainWorld("timelineApi", {
   deleteEntry,
   readFile,
   saveFile,
+  // addRapidEntry,
 });
 
 contextBridge.exposeInMainWorld("openDevTools", () => {
@@ -82,3 +87,8 @@ contextBridge.exposeInMainWorld("openDevTools", () => {
 contextBridge.exposeInMainWorld("onAlert", (callback: (t: string) => void) => {
   ipcRenderer.on("alert", (_, value) => callback(value));
 });
+
+contextBridge.exposeInMainWorld("addRapidEntry", (message: SimToCmMessage) => {
+  ipcRenderer.invoke("addRapidEntry", message);
+}
+);

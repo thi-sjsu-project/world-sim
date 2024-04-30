@@ -4,6 +4,8 @@ import Header from "./components/header";
 import { TimelineEntry } from "src/main/timelinemgr";
 import { Signal } from "./util";
 import { AlertWidget } from "./components/alert";
+import { CreateWidget } from "./components/create";
+import { RapidWidget } from "./components/rapid";
 
 export const STATE = {
   elapsed: Signal(0),
@@ -31,9 +33,11 @@ window.timelineApi.onWsUpdate((wsConnected: boolean) => {
 const App: Component = () => {
   return (
     <>
+      <CreateWidget />
       <AlertWidget />
       <Header />
       <Timeline />
+      <RapidWidget/>
     </>
   );
 };

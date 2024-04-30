@@ -20,12 +20,20 @@ export function startWebSocketServer(webContents: WebContents) {
     webContents.send("timelineWsUpdate", connectionActive);
   });
 
+
+
+
   wss.on("connection", async (ws) => {
     if (connectionActive) {
       logError("(ws) rejected duplicate connection");
       ws.close();
       return;
     }
+
+    ipcMain.handle("addRapidEntry", (event, message: SimToCmMessage) => {
+      ws.send(JSON.stringify(message));
+    });
+  
 
     const player = timelineManager.start();
 
