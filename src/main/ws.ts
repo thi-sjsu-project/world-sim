@@ -20,9 +20,6 @@ export function startWebSocketServer(webContents: WebContents) {
     webContents.send("timelineWsUpdate", connectionActive);
   });
 
-
-
-
   wss.on("connection", async (ws) => {
     if (connectionActive) {
       logError("(ws) rejected duplicate connection");
@@ -30,10 +27,10 @@ export function startWebSocketServer(webContents: WebContents) {
       return;
     }
 
-    ipcMain.handle("addRapidEntry", (event, message: SimToCmMessage) => {
+    ipcMain.removeHandler("sendMessageInstant");
+    ipcMain.handle("sendMessageInstant", (_, message: SimToCmMessage) => {
       ws.send(JSON.stringify(message));
     });
-  
 
     const player = timelineManager.start();
 
@@ -43,6 +40,7 @@ export function startWebSocketServer(webContents: WebContents) {
     }
 
     function closeHandler() {
+      ipcMain.removeHandler("sendMessageInstant");
       setActive(false);
       player.stop();
       logInfo("(ws) connection closed");

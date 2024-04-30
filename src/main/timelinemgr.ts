@@ -1,11 +1,7 @@
+// prettier-ignore
+import { getDefaultTimeline, msgValidator, timelineEntryValidator, timelineValidator } from "./validation";
 import { WebContents, dialog, ipcMain } from "electron";
 import { SimToCmMessage } from "../../submodules/message-schemas/schema-types";
-import {
-  DEFAULT_TIMELINE,
-  msgValidator,
-  timelineEntryValidator,
-  timelineValidator,
-} from "./messages";
 import { readFileSync, writeFileSync } from "fs";
 import { delayMs } from "./util";
 import typia from "typia";
@@ -24,7 +20,7 @@ export class TimelineManager {
 
   constructor(webContents: WebContents) {
     this.webContents = webContents;
-    this.timeline = structuredClone(DEFAULT_TIMELINE);
+    this.timeline = structuredClone(getDefaultTimeline());
     this.allowConnections = true;
 
     ipcMain.handle("timelineUpdateRequest", (_) => this.sendTimelineToRenderer());
@@ -33,7 +29,6 @@ export class TimelineManager {
     ipcMain.handle("timelineDeleteEntry", (_, idx: number) => this.deleteEntry(idx));
     ipcMain.handle("timelineReadFile", (_) => this.readFromFile());
     ipcMain.handle("timelineSaveFile", (_) => this.saveToFile());
-    // ipcMain.handle("addRapidEntry", (_, message: SimToCmMessage) => this.addRapidEntry(message));
   }
 
   start(): TimelinePlayer {
@@ -47,8 +42,10 @@ export class TimelineManager {
   private addEntry(message: SimToCmMessage) {
     const validationResult = msgValidator(message);
     if (validationResult.success) {
+      const prevEntry = this.timeline[this.timeline.length - 1];
+      message.stressLevel = prevEntry.msg.stressLevel ?? 0.5;
       const entry: TimelineEntry = {
-        delay: this.timeline[this.timeline.length - 1].delay + 5000,
+        delay: prevEntry.delay + 5000,
         msg: message,
       };
       this.timeline.push(entry);
@@ -57,23 +54,6 @@ export class TimelineManager {
     }
     this.sendTimelineToRenderer();
   }
-
-  // private addRapidEntry(message: SimToCmMessage) {
-  //   const validationResult = msgValidator(message);
-    
-  //   if (validationResult.success) {
-  //     //add to the beginning of the timeline
-  //     //we need to make it so that it
-  //     const entry: TimelineEntry = {
-  //       delay: 0, 
-  //       msg: message,
-  //     };
-  //     this.timeline.push(entry);
-  //   } else {
-  //     this.alertValidationErrors(validationResult.errors);
-  //   }
-  //   this.sendTimelineToRenderer();
-  // }
 
   private editEntry(i: number, data: TimelineEntry) {
     const validationResult = timelineEntryValidator(data);

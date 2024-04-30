@@ -1,9 +1,10 @@
 // prettier-ignore
 import { IconDeviceFloppy, IconFolder, IconMessageCirclePlus, IconPlayerPause, IconPlayerPlay, IconPlugConnected, IconPlugConnectedX, IconRestore, IconZoomCode, IconBolt } from "@tabler/icons-solidjs";
 import { Component, Show } from "solid-js";
-import { SimToCmMessage } from "../../../../submodules/message-schemas/schema-types";
+import { Message, SimToCmMessage } from "../../../../submodules/message-schemas/schema-types";
 import { v4 as uuid } from "uuid";
 import { STATE } from "../app";
+import { showMessageCreationDialog } from "./create";
 
 // TODO: componentize header buttons
 
@@ -17,9 +18,8 @@ const Header: Component = () => {
       <ReadFileButton />
       <SaveFileButton />
       <AddMessageButton />
-      <RapidButton/>
+      <InstantSendButton />
       <DevToolsButton />
-
     </div>
   );
 };
@@ -135,14 +135,20 @@ const SaveFileButton: Component = () => {
 };
 
 const AddMessageButton: Component = () => {
-  const handleCreateClick = () => {
-    window.onCreateAlert();
+  const handleClick = () => {
+    if (!STATE.wsConnected.get()) {
+      showMessageCreationDialog((message: Message) => {
+        message.id = uuid();
+        const simToCmMessage: SimToCmMessage = { message };
+        window.timelineApi.addEntry(simToCmMessage);
+      });
+    }
   };
 
   return (
     <button
       class="mr-3 text-zinc-600 hover:text-zinc-500 disabled:cursor-not-allowed disabled:text-zinc-800 disabled:hover:text-zinc-800"
-      onclick={handleCreateClick}
+      onclick={handleClick}
       title="Create Message"
       disabled={STATE.wsConnected.get()}
     >
@@ -151,18 +157,23 @@ const AddMessageButton: Component = () => {
   );
 };
 
-const RapidButton: Component = () => {
-  const handleRapidClick = () => {
-    window.onRapidCreateAlert();
+const InstantSendButton: Component = () => {
+  const handleClick = () => {
+    if (STATE.wsConnected.get()) {
+      showMessageCreationDialog((message: Message) => {
+        message.id = uuid();
+        const simToCmMessage: SimToCmMessage = { message };
+        window.sendMessageInstant(simToCmMessage);
+      });
+    }
   };
+
   return (
     <button
-    class="mr-3 text-zinc-600 hover:text-zinc-500 pl-2 border-l border-l-zinc-700 disabled:cursor-not-allowed disabled:text-zinc-800 disabled:hover:text-zinc-800"
-      onclick={() => {
-        if (STATE.wsConnected.get()) handleRapidClick();
-      }}
-      title="RAPID FIRE MESSAGES"
-      disabled = {!STATE.wsConnected.get()}
+      class="mr-3 text-zinc-600 hover:text-zinc-500 pl-2 border-l border-l-zinc-700 disabled:cursor-not-allowed disabled:text-zinc-800 disabled:hover:text-zinc-800"
+      onclick={handleClick}
+      title="Send message instantly"
+      disabled={!STATE.wsConnected.get()}
     >
       <IconBolt />
     </button>

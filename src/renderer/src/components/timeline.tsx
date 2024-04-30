@@ -56,7 +56,10 @@ const Entry: Component<{
 
       <div class="bg-zinc-800 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)]">
         <span>
-          Message {props.index}: {props.item.msg.message?.kind}
+          Message {props.index}:&nbsp;
+          <Show when={props.item.msg.message} fallback={"(no message)"}>
+            {props.item.msg.message?.kind}
+          </Show>
         </span>
 
         <div class="float-right text-zinc-500">
@@ -78,27 +81,31 @@ const Entry: Component<{
         </div>
 
         <div class="text-sm text-zinc-500">
-          <span>
-            Priority Level:&nbsp;
-            <EditInput
-              value={props.item.msg.message.priority}
-              onChange={(value) => {
-                props.item.msg.message.priority = ~~value;
-                window.timelineApi.editEntry(props.index, props.item);
-              }}
-            />
-          </span>
+          <Show when={props.item.msg.message}>
+            <span class="mr-6">
+              Priority Level:&nbsp;
+              <EditInput
+                value={props.item.msg.message!.priority}
+                onChange={(value) => {
+                  props.item.msg.message!.priority = ~~value;
+                  window.timelineApi.editEntry(props.index, props.item);
+                }}
+              />
+            </span>
+          </Show>
 
-          <span class="ml-6">
-            Stress Level:&nbsp;
-            <EditInput
-              value={props.item.msg.stressLevel}
-              onChange={(value) => {
-                props.item.msg.stressLevel = ~~value;
-                window.timelineApi.editEntry(props.index, props.item);
-              }}
-            />
-          </span>
+          <Show when={props.item.msg.stressLevel}>
+            <span>
+              Stress Level:&nbsp;
+              <EditInput
+                value={props.item.msg.stressLevel}
+                onChange={(value) => {
+                  props.item.msg.stressLevel = ~~value;
+                  window.timelineApi.editEntry(props.index, props.item);
+                }}
+              />
+            </span>
+          </Show>
 
           <span class="float-right mr-4">
             <EditInput

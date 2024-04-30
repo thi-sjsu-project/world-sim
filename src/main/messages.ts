@@ -1,7 +1,5 @@
 // prettier-ignore
-import { AcaDefect, AcaFuelLow, AcaHeadingToBase, Message, MissileToOwnshipDetected, RequestApprovalToAttack, SimToCmMessage } from "../../submodules/message-schemas/schema-types";
-import typia from "typia";
-import { logError } from "./util";
+import { AcaDefect, AcaFuelLow, AcaHeadingToBase, Message, MissileToOwnshipDetected, RequestApprovalToAttack } from "../../submodules/message-schemas/schema-types";
 import { TimelineEntry } from "./timelinemgr";
 
 /* sample messages ********************************************************************************/
@@ -183,14 +181,10 @@ const MESSAGES: Array<Message> = [
   } satisfies RequestApprovalToAttack,
 ];
 
-/* validation *************************************************************************************/
-
-export const msgValidator = typia.createValidateEquals<SimToCmMessage>();
-export const timelineEntryValidator = typia.createValidateEquals<TimelineEntry>();
-export const timelineValidator = typia.createValidateEquals<Array<TimelineEntry>>();
+/* default timeline *******************************************************************************/
 
 // prettier-ignore
-const UNVALIDATED_TIMELINE: Array<TimelineEntry> = [
+export const UNVALIDATED_TIMELINE: Array<TimelineEntry> = [
   { delay: 0,      msg: { message: MESSAGES[0], stressLevel: 0.1 } },
   { delay: 10_000, msg: { message: MESSAGES[1], stressLevel: 0.3 } },
   { delay: 12_000, msg: { message: MESSAGES[2], stressLevel: 0.7 } },
@@ -203,14 +197,15 @@ const UNVALIDATED_TIMELINE: Array<TimelineEntry> = [
   { delay: 60_000, msg: { message: MESSAGES[9], stressLevel: 0.6 } },
 ];
 
-export const DEFAULT_TIMELINE = (() => {
-  const validationResult = timelineValidator(UNVALIDATED_TIMELINE);
-  if (!validationResult.success) {
-    logError(`default timeline invalid:`);
-    for (const error of validationResult.errors) {
-      logError(` - ${error.path}, expected ${error.expected}, found value ${error.value}`);
-    }
-    throw new Error("default timeline invalid");
-  }
-  return UNVALIDATED_TIMELINE;
-})();
+/* predefined messages for selection **************************************************************/
+
+// prettier-ignore
+export const SELECTION_MESSAGES = [
+  { label: "RequestApproval - low prio", msg: MESSAGES[5] },
+  { label: "RequestApproval - high prio", msg: MESSAGES[9] },
+  { label: "RequestApproval - collateral", msg: MESSAGES[8] },
+  { label: "MissileToOwnship", msg: MESSAGES[6] },
+  { label: "AcaFuelLow", msg: MESSAGES[2] },
+  { label: "AcaHeadingToBase", msg: MESSAGES[4] },
+  { label: "AcaDefect", msg: MESSAGES[7] },
+];
