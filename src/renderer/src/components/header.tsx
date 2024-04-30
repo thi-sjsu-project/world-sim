@@ -1,5 +1,5 @@
 // prettier-ignore
-import { IconDeviceFloppy, IconFolder, IconMessageCirclePlus, IconPlayerPause, IconPlayerPlay, IconPlugConnected, IconPlugConnectedX, IconRestore, IconZoomCode } from "@tabler/icons-solidjs";
+import { IconDeviceFloppy, IconFolder, IconMessageCirclePlus, IconPlayerPause, IconPlayerPlay, IconPlugConnected, IconPlugConnectedX, IconRestore, IconZoomCode, IconBolt } from "@tabler/icons-solidjs";
 import { Component, Show } from "solid-js";
 import { SimToCmMessage } from "../../../../submodules/message-schemas/schema-types";
 import { v4 as uuid } from "uuid";
@@ -17,7 +17,9 @@ const Header: Component = () => {
       <ReadFileButton />
       <SaveFileButton />
       <AddMessageButton />
+      <RapidButton/>
       <DevToolsButton />
+
     </div>
   );
 };
@@ -145,6 +147,24 @@ const AddMessageButton: Component = () => {
       disabled={STATE.wsConnected.get()}
     >
       <IconMessageCirclePlus />
+    </button>
+  );
+};
+
+const RapidButton: Component = () => {
+  const handleRapidClick = () => {
+    window.onRapidCreateAlert();
+  };
+  return (
+    <button
+    class="mr-3 text-zinc-600 hover:text-zinc-500 pl-2 border-l border-l-zinc-700 disabled:cursor-not-allowed disabled:text-zinc-800 disabled:hover:text-zinc-800"
+      onclick={() => {
+        if (STATE.wsConnected.get()) handleRapidClick();
+      }}
+      title="RAPID FIRE MESSAGES"
+      disabled = {!STATE.wsConnected.get()}
+    >
+      <IconBolt />
     </button>
   );
 };

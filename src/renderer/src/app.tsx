@@ -5,6 +5,7 @@ import { TimelineEntry } from "src/main/timelinemgr";
 import { Signal } from "./util";
 import { AlertWidget } from "./components/alert";
 import { CreateWidget } from "./components/create";
+import { RapidWidget } from "./components/rapid";
 
 export const STATE = {
   elapsed: Signal(0),
@@ -36,6 +37,7 @@ const App: Component = () => {
       <AlertWidget />
       <Header />
       <Timeline />
+      <RapidWidget/>
     </>
   );
 };

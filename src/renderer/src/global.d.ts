@@ -18,6 +18,7 @@ type TimelineApi = {
   deleteEntry: (idx: number) => void;
   readFile: () => void;
   saveFile: () => void;
+  // addRapidEntry: (message: SimToCmMessage) => void;
 };
 
 declare global {
@@ -25,6 +26,8 @@ declare global {
     timelineApi: TimelineApi;
     onAlert: (callback: (text: string) => void) => void;
     onCreateAlert:() => void;
+    onRapidCreateAlert:() => void;
+    addRapidEntry: (message: SimToCmMessage) => void;
     openDevTools: () => void;
   }
 }
