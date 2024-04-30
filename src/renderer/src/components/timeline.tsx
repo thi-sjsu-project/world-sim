@@ -1,7 +1,7 @@
 import { Component, For, Show, createMemo, createUniqueId, onMount } from "solid-js";
 import { TimelineEntry } from "../../../main/timelinemgr";
 import { STATE } from "../app";
-import { IconPencil, IconTrash } from "@tabler/icons-solidjs";
+import { IconAlertTriangle, IconBrain, IconPencil, IconTrash } from "@tabler/icons-solidjs";
 import { Signal } from "@/util";
 import { showAlert } from "./alert";
 import { Message } from "@messages-schemas/schema-types";
@@ -56,7 +56,6 @@ const Entry: Component<{
 
       <div class="bg-zinc-800 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)]">
         <span>
-          Message {props.index}:&nbsp;
           <Show when={props.item.msg.message} fallback={"(no message)"}>
             {props.item.msg.message?.kind}
           </Show>
@@ -83,7 +82,7 @@ const Entry: Component<{
         <div class="text-sm text-zinc-500">
           <Show when={props.item.msg.message}>
             <span class="mr-6">
-              Priority Level:&nbsp;
+              <IconAlertTriangle size={16} class="inline-block mr-2" />
               <EditInput
                 value={props.item.msg.message!.priority}
                 onChange={(value) => {
@@ -96,7 +95,7 @@ const Entry: Component<{
 
           <Show when={props.item.msg.stressLevel}>
             <span>
-              Stress Level:&nbsp;
+              <IconBrain size={16} class="inline-block mr-2" />
               <EditInput
                 value={props.item.msg.stressLevel}
                 onChange={(value) => {
@@ -134,7 +133,7 @@ const EditInput: Component<{
   return (
     <input
       value={props.value}
-      class="bg-transparent w-6 inline text-right focus:outline-none border-b border-b-zinc-700 focus:border-b-blue-400 focus:text-zinc-400 hover:border-b-zinc-400 hover:text-zinc-400 disabled:hover:border-b-zinc-500 disabled:hover:text-zinc-500 cursor-pointer disabled:cursor-not-allowed disabled:border-b-transparent"
+      class="bg-transparent w-8 inline text-right focus:outline-none border-b border-b-zinc-700 focus:border-b-blue-400 focus:text-zinc-400 hover:border-b-zinc-400 hover:text-zinc-400 disabled:hover:border-b-zinc-500 disabled:hover:text-zinc-500 cursor-pointer disabled:cursor-not-allowed disabled:border-b-transparent"
       disabled={STATE.wsConnected.get()}
       onChange={(e) => {
         const value = Number(e.currentTarget.value);
