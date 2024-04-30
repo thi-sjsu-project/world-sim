@@ -216,16 +216,19 @@ const handleCreateClick = (message: Message) => {
           <IconX />
         </button>
         <h1 class="text-lg font-semibold text-zinc-100 text-center mb-4" >Choose a Message To Create:</h1>
-        <button class="bg-zinc-700 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)] mb-4 ml-4"onClick={() => handleCreateClick(MESSAGES[0])}>New {MESSAGES[0].kind}</button>
-        <button class="bg-zinc-700 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)] mb-4 ml-4"onClick={() => handleCreateClick(MESSAGES[1])}>New {MESSAGES[1].kind}</button>
-        <button class="bg-zinc-700 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)] mb-4 ml-4"onClick={() => handleCreateClick(MESSAGES[2])}>New {MESSAGES[2].kind}</button>
-        <button class="bg-zinc-700 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)] mb-4 ml-4"onClick={() => handleCreateClick(MESSAGES[3])}>New {MESSAGES[3].kind}</button>
+        <button class="bg-zinc-700 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)] mb-4 ml-4"onClick={() => handleCreateClick(MESSAGES[0])}>High Prio | Low Threat {MESSAGES[0].kind}</button>
+        <button class="bg-zinc-700 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)] mb-4 ml-4"onClick={() => handleCreateClick(MESSAGES[1])}>Low Prio | Low Threat {MESSAGES[1].kind}</button>
+        <button class="bg-zinc-700 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)] mb-4 ml-4"onClick={() => handleCreateClick(MESSAGES[2])}>{MESSAGES[2].kind}</button>
+        <button class="bg-zinc-700 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)] mb-4 ml-4"onClick={() => handleCreateClick(MESSAGES[3])}>Low Priority | Low Threat  {MESSAGES[3].kind}</button>
         <button class="bg-zinc-700 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)] mb-4 ml-4"onClick={() => handleCreateClick(MESSAGES[4])}>New {MESSAGES[4].kind}</button>
-        <button class="bg-zinc-700 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)] mb-4 ml-4"onClick={() => handleCreateClick(MESSAGES[5])}>New {MESSAGES[5].kind}</button>
-        <button class="bg-zinc-700 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)] mb-4 ml-4"onClick={() => handleCreateClick(MESSAGES[6])}>New {MESSAGES[6].kind}</button>
-        <button class="bg-zinc-700 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)] mb-4 ml-4"onClick={() => handleCreateClick(MESSAGES[7])}>New {MESSAGES[7].kind}</button>
+        <button class="bg-zinc-700 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)] mb-4 ml-4"onClick={() => handleCreateClick(MESSAGES[5])}>Low Priority | High Threat {MESSAGES[5].kind}</button>
+        <button class="bg-zinc-700 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)] mb-4 ml-4"onClick={() => handleCreateClick(MESSAGES[6])}>{MESSAGES[6].kind}</button>
+        <button class="bg-zinc-700 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)] mb-4 ml-4"onClick={() => handleCreateClick(MESSAGES[7])}>{MESSAGES[7].kind}</button>
+        <button class="bg-zinc-700 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)] mb-4 ml-4"onClick={() => handleCreateClick(MESSAGES[8])}>High Priority | Low Threat {MESSAGES[8].kind}</button>
+        <button class="bg-zinc-700 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)] mb-4 ml-4"onClick={() => handleCreateClick(MESSAGES[9])}>High Priority | Low Threat {MESSAGES[9].kind}</button>
         
         
+
       </div>
     </div>
   </Show>
