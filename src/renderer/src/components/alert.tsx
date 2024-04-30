@@ -2,14 +2,18 @@ import { Signal } from "@/util";
 import { IconX } from "@tabler/icons-solidjs";
 import { Component, Show } from "solid-js";
 
+export let showAlert: (text: string) => void;
+
 export const AlertWidget: Component = () => {
   const visible = Signal(false);
   const message = Signal("");
 
-  window.onAlert((text: string) => {
+  showAlert = (text: string) => {
     message.set(text);
     visible.set(true);
-  });
+  };
+
+  window.onAlert(showAlert);
 
   return (
     <Show when={visible.get()}>

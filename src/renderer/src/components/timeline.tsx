@@ -1,7 +1,10 @@
-import { Component, For, createMemo, onMount } from "solid-js";
+import { Component, For, Show, createMemo, createUniqueId, onMount } from "solid-js";
 import { TimelineEntry } from "../../../main/timelinemgr";
 import { STATE } from "../app";
 import { IconPencil, IconTrash } from "@tabler/icons-solidjs";
+import { Signal } from "@/util";
+import { showAlert } from "./alert";
+import { Message } from "@messages-schemas/schema-types";
 
 const Timeline: Component = () => {
   onMount(() => {
@@ -9,10 +12,27 @@ const Timeline: Component = () => {
     window.timelineApi.requestWsUpdate();
   });
 
+  const openedEditWidget = Signal<null | number>(null);
+  createMemo(() => {
+    // when timeline is updated, close all opened widgets
+    openedEditWidget.set(STATE.timeline.get() && null);
+  });
+
+  function openEditWidget(index: number) {
+    openedEditWidget.set(openedEditWidget.get() === index ? null : index);
+  }
+
   return (
     <div class="mt-4 h-[calc(100vh-5.5rem)] overflow-auto">
       <For each={STATE.timeline.get()}>
-        {(item, index) => <Entry item={item} index={index()} />}
+        {(item, index) => (
+          <Entry
+            item={item}
+            index={index()}
+            editWidgetOpened={openedEditWidget.get() === index()}
+            openEditWidget={() => openEditWidget(index())}
+          />
+        )}
       </For>
     </div>
   );
@@ -21,11 +41,13 @@ const Timeline: Component = () => {
 const Entry: Component<{
   item: TimelineEntry;
   index: number;
+  editWidgetOpened: boolean;
+  openEditWidget: () => void;
 }> = (props) => {
   const dotClass = createMemo(() => {
     const wasPlayed = STATE.wsConnected.get() && STATE.elapsed.get() >= props.item.delay;
     const dotBackground = wasPlayed ? "bg-green-400" : "bg-zinc-600";
-    return `rounded-full w-3 h-3 mr-3 ml-1 inline-block ${dotBackground} align-[1.3rem]`;
+    return `rounded-full w-3 h-3 mr-3 ml-1 mt-2.5 inline-block ${dotBackground} align-top`;
   });
 
   return (
@@ -40,7 +62,7 @@ const Entry: Component<{
         <div class="float-right text-zinc-500">
           <button
             class="hover:text-zinc-400 disabled:cursor-not-allowed disabled:text-zinc-700 disabled:hover:text-zinc-700"
-            onClick={undefined}
+            onClick={props.openEditWidget}
             disabled={STATE.wsConnected.get()}
           >
             <IconPencil size={16} />
@@ -55,39 +77,44 @@ const Entry: Component<{
           </button>
         </div>
 
-        <span class="text-sm">
-          <br />
-          Priority Level:&nbsp;
-          <EditInput
-            value={props.item.msg.message.priority}
-            onChange={(value) => {
-              props.item.msg.message.priority = value;
-              window.timelineApi.editEntry(props.index, props.item);
-            }}
-          />
-        </span>
+        <div class="text-sm text-zinc-500">
+          <span>
+            Priority Level:&nbsp;
+            <EditInput
+              value={props.item.msg.message.priority}
+              onChange={(value) => {
+                props.item.msg.message.priority = ~~value;
+                window.timelineApi.editEntry(props.index, props.item);
+              }}
+            />
+          </span>
 
-        <span class="text-sm">
-          &nbsp; &nbsp; &nbsp; Stress Level:&nbsp;
-          <EditInput
-            value={props.item.msg.stressLevel}
-            onChange={(value) => {
-              props.item.msg.stressLevel = value;
-              window.timelineApi.editEntry(props.index, props.item);
-            }}
-          />
-        </span>
+          <span class="ml-6">
+            Stress Level:&nbsp;
+            <EditInput
+              value={props.item.msg.stressLevel}
+              onChange={(value) => {
+                props.item.msg.stressLevel = ~~value;
+                window.timelineApi.editEntry(props.index, props.item);
+              }}
+            />
+          </span>
 
-        <span class="float-right text-zinc-500 mr-4">
-          <EditInput
-            value={props.item.delay / 1000}
-            onChange={(value) => {
-              props.item.delay = value * 1000;
-              window.timelineApi.editEntry(props.index, props.item);
-            }}
-          />
-          s
-        </span>
+          <span class="float-right mr-4">
+            <EditInput
+              value={props.item.delay / 1000}
+              onChange={(value) => {
+                props.item.delay = ~~(value * 1000);
+                window.timelineApi.editEntry(props.index, props.item);
+              }}
+            />
+            s
+          </span>
+        </div>
+
+        <Show when={props.editWidgetOpened}>
+          <EditWidget item={props.item} index={props.index} />
+        </Show>
       </div>
     </div>
   );
@@ -104,9 +131,44 @@ const EditInput: Component<{
       disabled={STATE.wsConnected.get()}
       onChange={(e) => {
         const value = Number(e.currentTarget.value);
-        if (value) props.onChange(~~value);
+        if (value) props.onChange(value);
       }}
     ></input>
+  );
+};
+
+const EditWidget: Component<{
+  item: TimelineEntry;
+  index: number;
+}> = (props) => {
+  const id = createUniqueId();
+
+  onMount(() => {
+    const elem = document.getElementById(id);
+    elem?.setAttribute("style", `height: ${elem.scrollHeight}px; overflow-y: hidden;`);
+    elem?.addEventListener("input", () => {
+      elem.style.height = "auto";
+      elem.style.height = `${elem.scrollHeight}px`;
+    });
+  });
+
+  return (
+    <textarea
+      id={id}
+      class="rounded-lg border border-zinc-700 bg-transparent mt-2 w-full resize-none outline-none focus:border-zinc-500 p-2 font-mono text-xs"
+      spellcheck={false}
+      onChange={(e) => {
+        try {
+          const msgFromJson: Message = JSON.parse(e.currentTarget.value);
+          props.item.msg.message = msgFromJson;
+          window.timelineApi.editEntry(props.index, props.item);
+        } catch (e) {
+          showAlert(`Invalid JSON string: ${e}`);
+        }
+      }}
+    >
+      {JSON.stringify(props.item.msg.message, undefined, 2)}
+    </textarea>
   );
 };
 
