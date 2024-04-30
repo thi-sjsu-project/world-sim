@@ -134,30 +134,7 @@ const SaveFileButton: Component = () => {
 
 const AddMessageButton: Component = () => {
   const handleCreateClick = () => {
-    const message: SimToCmMessage = {
-      message: {
-        id: uuid(),
-        priority: 2,
-        kind: "RequestApprovalToAttack",
-        data: {
-          target: {
-            location: { lat: 48.600045, lng: 11.607559 },
-            threatLevel: 0.2,
-            type: "RS-12",
-          },
-          collateralDamage: "none",
-          detectedByAca: 4,
-          attackWeapon: {
-            type: "ewSuppression",
-            load: 0.6,
-          },
-          choiceWeight: 0.5,
-        },
-      },
-
-      stressLevel: 0.5,
-    };
-    window.timelineApi.addEntry(message);
+    window.onCreateAlert();
   };
 
   return (

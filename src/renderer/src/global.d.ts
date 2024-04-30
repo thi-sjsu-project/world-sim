@@ -24,6 +24,7 @@ declare global {
   interface Window {
     timelineApi: TimelineApi;
     onAlert: (callback: (text: string) => void) => void;
+    onCreateAlert:() => void;
     openDevTools: () => void;
   }
 }
