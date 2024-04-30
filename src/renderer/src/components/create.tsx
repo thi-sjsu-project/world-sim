@@ -181,6 +181,11 @@ const MESSAGES: Array<Message> = [
     } satisfies RequestApprovalToAttack,
   ];
 
+
+const generateUUID = () => {
+    return uuid();
+    }
+
 export const CreateWidget: Component = () => {
   const visible = Signal(false);
 
@@ -190,10 +195,12 @@ export const CreateWidget: Component = () => {
   }
 
 const handleCreateClick = (message: Message) => {
+    const newMessage = { ...message, id: generateUUID() };
     const simToCmMessage: SimToCmMessage = {
-        message: message,
+        message: newMessage,
         stressLevel: 0.5,
     };
+    console.log(simToCmMessage.message.id)
     window.timelineApi.addEntry(simToCmMessage);
 }
 
