@@ -59,6 +59,7 @@ export class TimelineManager {
     const validationResult = timelineEntryValidator(data);
     if (validationResult.success) {
       this.timeline[i] = data;
+      this.timeline.sort((a, b) => a.delay - b.delay);
     } else {
       this.alertValidationErrors(validationResult.errors);
     }
