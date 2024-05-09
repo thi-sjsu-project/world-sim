@@ -13,7 +13,7 @@ let win: BrowserWindow | null = null;
 
 async function createWindow() {
   win = new BrowserWindow({
-    width: 432,
+    width: 448,
     height: 800,
     title: "World Simulator",
     webPreferences: {
