@@ -1,7 +1,8 @@
 import { Component, For, Show, createMemo, createUniqueId, onMount } from "solid-js";
 import { TimelineEntry } from "../../../main/timelinemgr";
+// prettier-ignore
+import { IconAlertTriangle, IconBrain, IconDeviceFloppy, IconPencil, IconTrash, IconX } from "@tabler/icons-solidjs";
 import { STATE } from "../app";
-import { IconAlertTriangle, IconBrain, IconPencil, IconTrash } from "@tabler/icons-solidjs";
 import { Signal } from "@/util";
 import { showAlert } from "./alert";
 import { Message } from "@messages-schemas/schema-types";
@@ -18,19 +19,19 @@ const Timeline: Component = () => {
     openedEditWidget.set(STATE.timeline.get() && null);
   });
 
-  function openEditWidget(index: number) {
+  function toggleEditWidget(index: number) {
     openedEditWidget.set(openedEditWidget.get() === index ? null : index);
   }
 
   return (
-    <div class="mt-4 h-[calc(100vh-5.5rem)] overflow-auto">
+    <div class="mt-4 h-[calc(100vh-5.5rem)] overflow-scroll">
       <For each={STATE.timeline.get()}>
         {(item, index) => (
           <Entry
             item={item}
             index={index()}
             editWidgetOpened={openedEditWidget.get() === index()}
-            openEditWidget={() => openEditWidget(index())}
+            toggleEditWidget={() => toggleEditWidget(index())}
           />
         )}
       </For>
@@ -42,7 +43,7 @@ const Entry: Component<{
   item: TimelineEntry;
   index: number;
   editWidgetOpened: boolean;
-  openEditWidget: () => void;
+  toggleEditWidget: () => void;
 }> = (props) => {
   const dotClass = createMemo(() => {
     const wasPlayed = STATE.wsConnected.get() && STATE.elapsed.get() >= props.item.delay;
@@ -64,7 +65,7 @@ const Entry: Component<{
         <div class="float-right text-zinc-500">
           <button
             class="hover:text-zinc-400 disabled:cursor-not-allowed disabled:text-zinc-700 disabled:hover:text-zinc-700"
-            onClick={props.openEditWidget}
+            onClick={props.toggleEditWidget}
             disabled={STATE.wsConnected.get()}
           >
             <IconPencil size={16} />
@@ -119,7 +120,11 @@ const Entry: Component<{
         </div>
 
         <Show when={props.editWidgetOpened}>
-          <EditWidget item={props.item} index={props.index} />
+          <EditWidget
+            item={props.item}
+            index={props.index}
+            close={() => props.toggleEditWidget()}
+          />
         </Show>
       </div>
     </div>
@@ -146,8 +151,11 @@ const EditInput: Component<{
 const EditWidget: Component<{
   item: TimelineEntry;
   index: number;
+  close: () => void;
 }> = (props) => {
   const id = createUniqueId();
+  const valueStr = JSON.stringify(props.item.msg.message, undefined, 2);
+  const value = Signal(valueStr);
 
   onMount(() => {
     const elem = document.getElementById(id);
@@ -158,23 +166,36 @@ const EditWidget: Component<{
     });
   });
 
+  const save = () => {
+    var msgFromJson: Message;
+    try {
+      msgFromJson = JSON.parse(value.get());
+    } catch (e) {
+      return showAlert(`Invalid JSON string: ${e}`);
+    }
+    props.item.msg.message = msgFromJson;
+    window.timelineApi.editEntry(props.index, props.item);
+  };
+
   return (
-    <textarea
-      id={id}
-      class="rounded-lg border border-zinc-700 bg-transparent mt-2 w-full resize-none outline-none focus:border-zinc-500 p-2 font-mono text-xs"
-      spellcheck={false}
-      onChange={(e) => {
-        try {
-          const msgFromJson: Message = JSON.parse(e.currentTarget.value);
-          props.item.msg.message = msgFromJson;
-          window.timelineApi.editEntry(props.index, props.item);
-        } catch (e) {
-          showAlert(`Invalid JSON string: ${e}`);
-        }
-      }}
-    >
-      {JSON.stringify(props.item.msg.message, undefined, 2)}
-    </textarea>
+    <div>
+      <textarea
+        id={id}
+        class="rounded-lg border border-zinc-700 bg-transparent mt-2 w-full resize-none outline-none focus:border-zinc-500 p-2 font-mono text-xs"
+        spellcheck={false}
+        onInput={(e) => value.set(e.currentTarget.value)}
+      >
+        {valueStr}
+      </textarea>
+      <div class="text-center">
+        <button class="text-zinc-500 hover:text-zinc-400" onClick={props.close}>
+          <IconX class="inline-block align-[-0.4rem]" /> Discard
+        </button>
+        <button class="ml-4 text-zinc-500 hover:text-zinc-400" onClick={save}>
+          <IconDeviceFloppy class="inline-block align-[-0.4rem]" /> Save
+        </button>
+      </div>
+    </div>
   );
 };
 
