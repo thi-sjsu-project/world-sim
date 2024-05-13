@@ -8,13 +8,14 @@ const MESSAGES: Array<Message> = [
   // example convo 1: high priority, low threat, no collateral
   {
     id: "AAA27046-14A8-449C-960C-79BE303E71D4",
+    conversationId: "2CEC4322-3B9A-439A-9782-876C226A04B6",
     priority: 2,
     kind: "RequestApprovalToAttack",
     data: {
       target: {
-        location: { lat: 48.600045, lng: 11.607559 },
+        location: { x: 900, y: 50 },
         threatLevel: 0.2,
-        type: "RS-12",
+        type: "airDefense",
       },
       collateralDamage: "none",
       detectedByAca: 4,
@@ -29,13 +30,14 @@ const MESSAGES: Array<Message> = [
   // example convo 2: low priority, low threat, no collateral, weapons low
   {
     id: "5EC92D78-4B9E-4879-BB2E-F226BD34151D",
+    conversationId: "BCB1F75E-E7AE-41E1-A8FE-4B4535694493",
     priority: 8,
     kind: "RequestApprovalToAttack",
     data: {
       target: {
-        location: { lat: 48.648044, lng: 11.594554 },
+        location: { x: 300, y: 100 },
         threatLevel: 0.25,
-        type: "RS-10",
+        type: "radar",
       },
       collateralDamage: "none",
       detectedByAca: 2,
@@ -50,6 +52,7 @@ const MESSAGES: Array<Message> = [
   // fuel low on aca
   {
     id: "EB207A99-D2DB-4C44-A211-293B0321C727",
+    conversationId: "11C63EF4-8C0E-4A27-9BE6-1F427F8D8876",
     priority: 5,
     kind: "AcaFuelLow",
     data: {
@@ -61,13 +64,14 @@ const MESSAGES: Array<Message> = [
   // example convo 3: low priority, low threat, no collateral
   {
     id: "301E5FB4-5D93-4233-9E52-4D87B95733D0",
+    conversationId: "3D917527-1A29-4F79-9157-555AC8A26F76",
     priority: 7,
     kind: "RequestApprovalToAttack",
     data: {
       target: {
-        location: { lat: 48.630549, lng: 11.583752 },
+        location: { x: 500, y: 200 },
         threatLevel: 0.15,
-        type: "AR-5",
+        type: "artillery",
       },
       collateralDamage: "none",
       detectedByAca: 1,
@@ -82,6 +86,7 @@ const MESSAGES: Array<Message> = [
   // aca that previously send low fuel is now heading to base
   {
     id: "C7216187-5E0D-442A-9432-5D342A9F1362",
+    conversationId: "11C63EF4-8C0E-4A27-9BE6-1F427F8D8876",
     priority: 5,
     kind: "AcaHeadingToBase",
     data: {
@@ -93,13 +98,14 @@ const MESSAGES: Array<Message> = [
   // example convo 4: low priority, high threat, no collateral
   {
     id: "34F70C3A-A592-4028-AC8E-9792A84AC1C5",
+    conversationId: "2F583080-2B2B-41E3-AD68-1E3DCC6EE1FE",
     priority: 7,
     kind: "RequestApprovalToAttack",
     data: {
       target: {
-        location: { lat: 48.607569, lng: 11.582834 },
+        location: { x: 950, y: 400 },
         threatLevel: 0.9,
-        type: "RS-12",
+        type: "radar",
       },
       collateralDamage: "none",
       detectedByAca: 2,
@@ -114,10 +120,11 @@ const MESSAGES: Array<Message> = [
   // example convo 5: missile heading towards ownship, weapons low on aca
   {
     id: "CD99F764-45E6-4A46-9636-F62243313177",
+    conversationId: "485C42FC-5E95-4614-91CE-3BFD2F4BE6B5",
     priority: 0,
     kind: "MissileToOwnshipDetected",
     data: {
-      missileLocation: { lat: 48.603579, lng: 11.592345 },
+      missileLocation: { x: 750, y: 200 },
       survivability: 0.8,
       detectedByAca: 1,
       acaAttackWeapon: {
@@ -131,6 +138,7 @@ const MESSAGES: Array<Message> = [
   // defect on aca
   {
     id: "C654FB26-2BD0-4128-88D2-D5CC7435B92F",
+    conversationId: "2995C162-0295-44E8-9D60-E60C13747B61",
     priority: 3,
     kind: "AcaDefect",
     data: {
@@ -142,13 +150,14 @@ const MESSAGES: Array<Message> = [
   // example convo 6: high priority, low threat, possible collateral
   {
     id: "156E8248-583C-4C44-A80A-7282D131A5C9",
+    conversationId: "CC97C92A-79F1-412C-BF66-108A7D8BF864",
     priority: 2,
     kind: "RequestApprovalToAttack",
     data: {
       target: {
-        location: { lat: 48.599382, lng: 11.593753 },
+        location: { x: 850, y: 700 },
         threatLevel: 0.1,
-        type: "DRDX-1",
+        type: "airDefense",
       },
       collateralDamage: "complex",
       detectedByAca: 3,
@@ -163,13 +172,14 @@ const MESSAGES: Array<Message> = [
   // example convo 7: high priority, low threat, no collateral, detected by ownship
   {
     id: "5442478F-50A5-4160-A9E7-C9218A776EC0",
+    conversationId: "65F99985-5314-4EAA-8B57-4D99F3850EE7",
     priority: 3,
     kind: "RequestApprovalToAttack",
     data: {
       target: {
-        location: { lat: 48.599382, lng: 11.593753 },
+        location: { x: 1300, y: 100 },
         threatLevel: 0.15,
-        type: "DRDX-1",
+        type: "artillery",
       },
       collateralDamage: "none",
       attackWeapon: {

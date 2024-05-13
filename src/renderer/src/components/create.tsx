@@ -33,7 +33,7 @@ export const CreateWidget: Component = () => {
               <button
                 class="bg-zinc-700 hover:bg-zinc-600 px-2 py-1 rounded-lg inline-block w-[calc(100%-1.75rem)] mb-4 ml-4"
                 onClick={() => {
-                  if (callback) callback(item.msg);
+                  if (callback) callback(structuredClone(item.msg));
                   visible.set(false);
                 }}
               >

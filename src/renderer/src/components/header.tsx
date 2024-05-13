@@ -146,6 +146,7 @@ const AddMessageButton: Component = () => {
     if (!STATE.wsConnected.get()) {
       showMessageCreationDialog((message: Message) => {
         message.id = uuid();
+        message.conversationId = uuid();
         const simToCmMessage: SimToCmMessage = { message };
         window.timelineApi.addEntry(simToCmMessage);
       });
@@ -169,6 +170,7 @@ const InstantSendButton: Component = () => {
     if (STATE.wsConnected.get()) {
       showMessageCreationDialog((message: Message) => {
         message.id = uuid();
+        message.conversationId = uuid();
         const simToCmMessage: SimToCmMessage = { message };
         window.sendMessageInstant(simToCmMessage);
       });
