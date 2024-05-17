@@ -5,6 +5,23 @@ import { TimelineEntry } from "./timelinemgr";
 /* sample messages ********************************************************************************/
 
 const MESSAGES: Array<Message> = [
+  // example convo 5: missile heading towards ownship, weapons low on aca
+  {
+    id: "CD99F764-45E6-4A46-9636-F62243313177",
+    conversationId: "485C42FC-5E95-4614-91CE-3BFD2F4BE6B5",
+    priority: 0,
+    kind: "MissileToOwnshipDetected",
+    data: {
+      missileLocation: { x: 750, y: 200 },
+      survivability: 0.8,
+      detectedByAca: 1,
+      acaAttackWeapon: {
+        type: "veryIntimidatingWeaponName",
+        load: 0.2,
+      },
+      choiceWeight: 1,
+    },
+  } satisfies MissileToOwnshipDetected,
   // example convo 1: high priority, low threat, no collateral
   {
     id: "AAA27046-14A8-449C-960C-79BE303E71D4",
@@ -13,7 +30,7 @@ const MESSAGES: Array<Message> = [
     kind: "RequestApprovalToAttack",
     data: {
       target: {
-        location: { x: 900, y: 50 },
+        location: { x: 900, y: 700 },
         threatLevel: 0.2,
         type: "airDefense",
       },
@@ -35,7 +52,7 @@ const MESSAGES: Array<Message> = [
     kind: "RequestApprovalToAttack",
     data: {
       target: {
-        location: { x: 300, y: 100 },
+        location: { x: 300, y: 350 },
         threatLevel: 0.25,
         type: "radar",
       },
@@ -69,7 +86,7 @@ const MESSAGES: Array<Message> = [
     kind: "RequestApprovalToAttack",
     data: {
       target: {
-        location: { x: 500, y: 200 },
+        location: { x: 500, y: 550 },
         threatLevel: 0.15,
         type: "artillery",
       },
@@ -117,24 +134,6 @@ const MESSAGES: Array<Message> = [
     },
   } satisfies RequestApprovalToAttack,
 
-  // example convo 5: missile heading towards ownship, weapons low on aca
-  {
-    id: "CD99F764-45E6-4A46-9636-F62243313177",
-    conversationId: "485C42FC-5E95-4614-91CE-3BFD2F4BE6B5",
-    priority: 0,
-    kind: "MissileToOwnshipDetected",
-    data: {
-      missileLocation: { x: 750, y: 200 },
-      survivability: 0.8,
-      detectedByAca: 1,
-      acaAttackWeapon: {
-        type: "veryIntimidatingWeaponName",
-        load: 0.2,
-      },
-      choiceWeight: 1,
-    },
-  } satisfies MissileToOwnshipDetected,
-
   // defect on aca
   {
     id: "C654FB26-2BD0-4128-88D2-D5CC7435B92F",
@@ -177,7 +176,7 @@ const MESSAGES: Array<Message> = [
     kind: "RequestApprovalToAttack",
     data: {
       target: {
-        location: { x: 1300, y: 100 },
+        location: { x: 1300, y: 400 },
         threatLevel: 0.15,
         type: "artillery",
       },
