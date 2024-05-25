@@ -21,7 +21,7 @@ const MESSAGES: Array<Message> = [
       },
       choiceWeight: 1,
     },
-    tags: ['missile', 'aca', 'aca-1', 'map-warning', 'map-warning-1'],
+    tags: ["missile", "aca", "aca-1", "map-warning", "map-warning-1"],
   } satisfies MissileToOwnshipDetected,
   // example convo 1: high priority, low threat, no collateral
   {
@@ -43,7 +43,7 @@ const MESSAGES: Array<Message> = [
       },
       choiceWeight: 0.5,
     },
-    tags: ['message','aca','aca-4', 'map-warning', 'map-warning-2'],
+    tags: ["message", "aca", "aca-4", "map-warning", "map-warning-2"],
   } satisfies RequestApprovalToAttack,
 
   // example convo 2: low priority, low threat, no collateral, weapons low
@@ -66,7 +66,31 @@ const MESSAGES: Array<Message> = [
       },
       choiceWeight: -0.2,
     },
-    tags: ['message','aca','aca-2', 'map-warning', 'map-warning-3'],
+    tags: ["message", "aca", "aca-2", "map-warning", "map-warning-3"],
+  } satisfies RequestApprovalToAttack,
+
+  // 2nd message in conversation
+  // first detected by aca 4, then by aca 3
+  {
+    id: "AAA27046-14A8-449C-960C-79BE303E7CCC",
+    conversationId: "2CEC4322-3B9A-439A-9782-876C226A04B6",
+    priority: 2,
+    kind: "RequestApprovalToAttack",
+    data: {
+      target: {
+        location: { x: 900, y: 700 },
+        threatLevel: 0.2,
+        type: "airDefense",
+      },
+      collateralDamage: "none",
+      detectedByAca: 3,
+      attackWeapon: {
+        type: "ewSuppression",
+        load: 0.6,
+      },
+      choiceWeight: 0.5,
+    },
+    tags: ["message", "aca", "aca-3", "map-warning", "map-warning-2"],
   } satisfies RequestApprovalToAttack,
 
   // fuel low on aca
@@ -79,7 +103,7 @@ const MESSAGES: Array<Message> = [
       acaId: 5,
       fuelLevel: 0.1,
     },
-    tags: ['message','aca','aca-5'],
+    tags: ["message", "aca", "aca-5"],
   } satisfies AcaFuelLow,
 
   // example convo 3: low priority, low threat, no collateral
@@ -102,7 +126,7 @@ const MESSAGES: Array<Message> = [
       },
       choiceWeight: 0.3,
     },
-    tags: ['message','aca','aca-1', 'map-warning', 'map-warning-4'],
+    tags: ["message", "aca", "aca-1", "map-warning", "map-warning-4"],
   } satisfies RequestApprovalToAttack,
 
   // aca that previously send low fuel is now heading to base
@@ -115,7 +139,7 @@ const MESSAGES: Array<Message> = [
       acaId: 5,
       reason: "fuelLow",
     },
-    tags: ['message','aca','aca-5'],
+    tags: ["message", "aca", "aca-5"],
   } satisfies AcaHeadingToBase,
 
   // example convo 4: low priority, high threat, no collateral
@@ -138,7 +162,7 @@ const MESSAGES: Array<Message> = [
       },
       choiceWeight: 0,
     },
-    tags: ['message','aca','aca-2', 'map-warning', 'map-warning-5'],
+    tags: ["message", "aca", "aca-2", "map-warning", "map-warning-5"],
   } satisfies RequestApprovalToAttack,
 
   // defect on aca
@@ -151,7 +175,7 @@ const MESSAGES: Array<Message> = [
       acaId: 1,
       message: "A screw came loose mid-flight.",
     },
-    tags: ['message','aca','aca-1'],
+    tags: ["message", "aca", "aca-1"],
   } satisfies AcaDefect,
 
   // example convo 6: high priority, low threat, possible collateral
@@ -174,7 +198,7 @@ const MESSAGES: Array<Message> = [
       },
       choiceWeight: -0.6,
     },
-    tags: ['message','aca','aca-3', 'map-warning', 'map-warning-6'],
+    tags: ["message", "aca", "aca-3", "map-warning", "map-warning-6"],
   } satisfies RequestApprovalToAttack,
 
   // example convo 7: high priority, low threat, no collateral, detected by ownship
@@ -197,7 +221,7 @@ const MESSAGES: Array<Message> = [
       },
       choiceWeight: 0.4,
     },
-    tags: ['message','aca','aca-3', 'map-warning', 'map-warning-7'],
+    tags: ["message", "aca", "aca-3", "map-warning", "map-warning-7"],
   } satisfies RequestApprovalToAttack,
 ];
 
