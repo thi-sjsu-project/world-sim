@@ -63,13 +63,15 @@ const Entry: Component<{
         </span>
 
         <div class="float-right text-zinc-500">
-          <button
-            class="hover:text-zinc-400 disabled:cursor-not-allowed disabled:text-zinc-700 disabled:hover:text-zinc-700"
-            onClick={props.toggleEditWidget}
-            disabled={STATE.wsConnected.get()}
-          >
-            <IconPencil size={16} />
-          </button>
+          <Show when={props.item.msg.message}>
+            <button
+              class="hover:text-zinc-400 disabled:cursor-not-allowed disabled:text-zinc-700 disabled:hover:text-zinc-700"
+              onClick={props.toggleEditWidget}
+              disabled={STATE.wsConnected.get()}
+            >
+              <IconPencil size={16} />
+            </button>
+          </Show>
           <br />
           <button
             class="hover:text-red-400 disabled:cursor-not-allowed disabled:text-zinc-700 disabled:hover:text-zinc-700"
@@ -94,7 +96,7 @@ const Entry: Component<{
             </span>
           </Show>
 
-          <Show when={props.item.msg.stressLevel}>
+          <Show when={props.item.msg.stressLevel !== undefined}>
             <span>
               <IconBrain size={16} class="inline-block mr-2" />
               <EditInput
