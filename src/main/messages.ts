@@ -5,24 +5,6 @@ import { TimelineEntry } from "./timelinemgr";
 /* sample messages ********************************************************************************/
 
 const MESSAGES: Array<Message> = [
-  // example convo 5: missile heading towards ownship, weapons low on aca
-  {
-    id: "CD99F764-45E6-4A46-9636-F62243313177",
-    conversationId: "485C42FC-5E95-4614-91CE-3BFD2F4BE6B5",
-    priority: 0,
-    kind: "MissileToOwnshipDetected",
-    data: {
-      missileLocation: { x: 750, y: 200 },
-      survivability: 0.8,
-      detectedByAca: 1,
-      acaAttackWeapon: {
-        type: "veryIntimidatingWeaponName",
-        load: 0.2,
-      },
-      choiceWeight: 1,
-    },
-    tags: ["missile", "aca", "aca-1", "map-warning", "map-warning-1"],
-  } satisfies MissileToOwnshipDetected,
   // example convo 1: high priority, low threat, no collateral
   {
     id: "AAA27046-14A8-449C-960C-79BE303E71D4",
@@ -178,6 +160,25 @@ const MESSAGES: Array<Message> = [
     tags: ["message", "aca", "aca-1"],
   } satisfies AcaDefect,
 
+  // example convo 5: missile heading towards ownship, weapons low on aca
+  {
+    id: "CD99F764-45E6-4A46-9636-F62243313177",
+    conversationId: "485C42FC-5E95-4614-91CE-3BFD2F4BE6B5",
+    priority: 0,
+    kind: "MissileToOwnshipDetected",
+    data: {
+      missileLocation: { x: 750, y: 200 },
+      survivability: 0.8,
+      detectedByAca: 1,
+      acaAttackWeapon: {
+        type: "veryIntimidatingWeaponName",
+        load: 0.2,
+      },
+      choiceWeight: 1,
+    },
+    tags: ["missile", "aca", "aca-1", "map-warning", "map-warning-1"],
+  } satisfies MissileToOwnshipDetected,
+
   // example convo 6: high priority, low threat, possible collateral
   {
     id: "156E8248-583C-4C44-A80A-7282D131A5C9",
@@ -234,9 +235,9 @@ export const UNVALIDATED_TIMELINE: Array<TimelineEntry> = [
   { delay: 12_000, msg: { message: MESSAGES[2], stressLevel: 0.7 } },
   { delay: 24_000, msg: { message: MESSAGES[3], stressLevel: 0.5 } },
   { delay: 25_000, msg: { message: MESSAGES[4], stressLevel: 0.6 } },
-  { delay: 28_000, msg: { message: MESSAGES[5], stressLevel: 0.9 } },
+  { delay: 28_000, msg: { message: MESSAGES[5], stressLevel: 0.8 } },
   { delay: 45_000, msg: { message: MESSAGES[6], stressLevel: 0.2 } },
-  { delay: 50_000, msg: { message: MESSAGES[7], stressLevel: 0.5 } },
+  { delay: 50_000, msg: { message: MESSAGES[7], stressLevel: 0.9 } },
   { delay: 55_000, msg: { message: MESSAGES[8], stressLevel: 0.7 } },
   { delay: 60_000, msg: { message: MESSAGES[9], stressLevel: 0.6 } },
 ];
