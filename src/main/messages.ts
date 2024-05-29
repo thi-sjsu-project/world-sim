@@ -56,7 +56,7 @@ const MESSAGES: Array<Message> = [
   {
     id: "AAA27046-14A8-449C-960C-79BE303E7CCC",
     conversationId: "2CEC4322-3B9A-439A-9782-876C226A04B6",
-    priority: 2,
+    priority: 1,
     kind: "RequestApprovalToAttack",
     data: {
       target: {
