@@ -169,11 +169,14 @@ const EditWidget: Component<{
   });
 
   const save = () => {
-    var msgFromJson: Message;
-    try {
-      msgFromJson = JSON.parse(value.get());
-    } catch (e) {
-      return showAlert(`Invalid JSON string: ${e}`);
+    const val = value.get();
+    var msgFromJson: Message | undefined;
+    if (val) {
+      try {
+        msgFromJson = JSON.parse(value.get());
+      } catch (e) {
+        return showAlert(`Invalid JSON string: ${e}`);
+      }
     }
     props.item.msg.message = msgFromJson;
     window.timelineApi.editEntry(props.index, props.item);
