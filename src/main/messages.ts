@@ -326,11 +326,10 @@ export const UNVALIDATED_TIMELINE: Array<TimelineEntry> = [
 
 // prettier-ignore
 export const SELECTION_MESSAGES = [
-  { label: "RequestApproval - low prio", msg: MESSAGES[5] },
-  { label: "RequestApproval - high prio", msg: MESSAGES[9] },
-  { label: "RequestApproval - collateral", msg: MESSAGES[8] },
-  { label: "MissileToOwnship", msg: MESSAGES[6] },
-  { label: "AcaFuelLow", msg: MESSAGES[2] },
-  { label: "AcaHeadingToBase", msg: MESSAGES[4] },
-  { label: "AcaDefect", msg: MESSAGES[7] },
+  { label: "ThreatDetected", msg: MESSAGES[0] },
+  { label: "RequestApproval", msg: MESSAGES[1] },
+  { label: "MissileToOwnship", msg: MESSAGES[11] },
+  { label: "AcaFuelLow", msg: MESSAGES[3] },
+  { label: "AcaHeadingToBase", msg: MESSAGES[6] },
+  { label: "AcaDefect", msg: MESSAGES[8] },
 ];
