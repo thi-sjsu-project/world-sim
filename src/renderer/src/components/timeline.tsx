@@ -102,7 +102,7 @@ const Entry: Component<{
               <EditInput
                 value={props.item.msg.stressLevel}
                 onChange={(value) => {
-                  props.item.msg.stressLevel = ~~value;
+                  props.item.msg.stressLevel = value;
                   window.timelineApi.editEntry(props.index, props.item);
                 }}
               />
