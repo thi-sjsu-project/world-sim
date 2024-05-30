@@ -42,12 +42,21 @@ export class TimelineManager {
   private addEntry(message: SimToCmMessage) {
     const validationResult = msgValidator(message);
     if (validationResult.success) {
-      const prevEntry = this.timeline[this.timeline.length - 1];
-      message.stressLevel = prevEntry.msg.stressLevel ?? 0.5;
-      const entry: TimelineEntry = {
-        delay: prevEntry.delay + 5000,
-        msg: message,
-      };
+      var entry: TimelineEntry;
+      if (this.timeline.length > 0) {
+        const prevEntry = this.timeline[this.timeline.length - 1];
+        message.stressLevel = prevEntry.msg.stressLevel ?? 0.5;
+        entry = {
+          delay: prevEntry.delay + 5000,
+          msg: message,
+        };
+      } else {
+        message.stressLevel = 0.5;
+        entry = {
+          delay: 0,
+          msg: message,
+        };
+      }
       this.timeline.push(entry);
     } else {
       this.alertValidationErrors(validationResult.errors);
