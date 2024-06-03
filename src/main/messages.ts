@@ -13,7 +13,7 @@ const MESSAGES: Array<Message> = [
     kind: "ThreatDetected",
     data: {
       target: {
-        location: { x: 900, y: 700 },
+        location: { x: 900, y: 550 },
         threatLevel: 0.2,
         type: "airDefense",
       },
